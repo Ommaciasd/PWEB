@@ -1,0 +1,17 @@
+*,body{margin:0;padding:0;box-sizing:border-box;text-align:center}
+
+body{color:yellow;line-height:1.4em;font-weight:800;
+    background-color:black;box-sizing:border-box;margin:0;
+    padding:0;height:100vh!important;font-family:"Lato",sans-serif}
+
+time{color:red}
+p{padding-right:150px}
+
+#SUPERIOR-MEDIO-SEGUNDO{font-size:x-large;flex-direction:column;
+    justify-content:center;display:flex;color:silver}  
+
+.wrapper{display:grid;grid-template-columns:repeat(5,1fr);grid-gap:10px;
+    grid-auto-rows:minmax(100px,auto)}
+body.one{grid-column:3;grid-row:6}
+div.two{grid-column:4;grid-row:1}
+button.three{grid-column:1;grid-row:1}
