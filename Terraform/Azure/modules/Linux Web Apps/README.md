@@ -88,8 +88,8 @@ provider "azurerm" {
   # Configure the Microsoft Azure Provider
   features {}
   environment     = "main"
-  subscription_id = "ID-AZURE-CUENTA" # Cuenta Azure Main
-  tenant_id       = "ID-AZURE-SUSCRIPTION" # Suscripcion Main
+  subscription_id = "ID-AZURE-CUENTA" # Cuenta Azure Dev
+  tenant_id       = "ID-AZURE-SUSCRIPTION" # Suscripcion Dev
 }
 
 # Generate a random integer to create a globally unique name
