@@ -73,7 +73,7 @@ variable "network-spe-cidr" {
 
 ~~~
 locals {
-  assetname  = "nanaykuna"
+  assetname  = "companyname"
   enviroment = "dev"
   base_name  = format("%s%s", local.assetname, local.enviroment)
 }
