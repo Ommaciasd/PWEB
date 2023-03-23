@@ -88,8 +88,8 @@ provider "azurerm" {
   # Configure the Microsoft Azure Provider
   features {}
   environment     = "main"
-  subscription_id = "ID-AZURE-CUENTA"      # Cuenta Azure Staging
-  tenant_id       = "ID-AZURE-SUSCRIPTION" # Suscripcion Staging
+  subscription_id = "ID-AZURE-CUENTA"      # Cuenta Azure Production
+  tenant_id       = "ID-AZURE-SUSCRIPTION" # Suscripcion Production
 }
 
 # Generate a random integer to create a globally unique name
@@ -104,7 +104,7 @@ resource "random_integer" "ri" {
 ~~~
 locals {
   assetname  = "companyname"
-  enviroment = "sta"
+  enviroment = "prod"
   base_name  = format("%s%s", local.assetname, local.enviroment)
 }
 
