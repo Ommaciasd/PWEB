@@ -87,9 +87,9 @@ terraform {
 provider "azurerm" {
   # Configure the Microsoft Azure Provider
   features {}
-  environment     = "sta"
-  subscription_id = "ID-AZURE-CUENTA"      # Cuenta Azure Staging
-  tenant_id       = "ID-AZURE-SUSCRIPTION" # Suscripcion Azure Staging
+  environment     = "prod"
+  subscription_id = "ID-AZURE-CUENTA"      # Cuenta Azure Prouction
+  tenant_id       = "ID-AZURE-SUSCRIPTION" # Suscripcion Azure Prouction
 }
 
 # Generate a random integer to create a globally unique name
@@ -104,7 +104,7 @@ resource "random_integer" "ri" {
 ~~~
 locals {
   assetname  = "companyname"
-  enviroment = "sta"
+  enviroment = "prod"
   base_name  = format("%s%s", local.assetname, local.enviroment)
 }
 
