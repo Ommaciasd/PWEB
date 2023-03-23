@@ -69,6 +69,36 @@ variable "network-spe-cidr" {
 }
 ~~~
 
+#### providers.tf
+
+~~~
+# Define Terraform provider
+terraform {
+  required_version = ">= 1.1.9"
+
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "3.37.0"
+    }
+  }
+}
+
+provider "azurerm" {
+  # Configure the Microsoft Azure Provider
+  features {}
+  environment     = "main"
+  subscription_id = "ID-AZURE-CUENTA" # Cuenta Azure Main
+  tenant_id       = "ID-AZURE-SUSCRIPTION" # Suscripcion Main
+}
+
+# Generate a random integer to create a globally unique name
+resource "random_integer" "ri" {
+  min = 10000
+  max = 99999
+}
+~~~
+
 #### main.tf
 
 ~~~
