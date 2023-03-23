@@ -89,7 +89,7 @@ provider "azurerm" {
   features {}
   environment     = "main"
   subscription_id = "ID-AZURE-CUENTA"      # Cuenta Azure Staging
-  tenant_id       = "ID-AZURE-SUSCRIPTION" # Suscripcion Staging
+  tenant_id       = "ID-AZURE-SUSCRIPTION" # Suscripcion Azure Staging
 }
 
 # Generate a random integer to create a globally unique name
