@@ -201,8 +201,8 @@ output "lwa_ids" {
 terraform init --update
 ~~~
 - **terraform:** API.
-- **init     :** init the API.
-- **--update :** update the terraform version, and providers.
+- **init:** init the API.
+- **--update:** update the terraform version, and providers.
 
 ~~~
 terraform get
