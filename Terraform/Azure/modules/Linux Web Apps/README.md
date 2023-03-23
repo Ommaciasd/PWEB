@@ -87,7 +87,7 @@ terraform {
 provider "azurerm" {
   # Configure the Microsoft Azure Provider
   features {}
-  environment     = "main"
+  environment     = "sta"
   subscription_id = "ID-AZURE-CUENTA"      # Cuenta Azure Staging
   tenant_id       = "ID-AZURE-SUSCRIPTION" # Suscripcion Azure Staging
 }
