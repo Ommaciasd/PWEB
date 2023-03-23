@@ -104,7 +104,7 @@ resource "random_integer" "ri" {
 ~~~
 locals {
   assetname  = "companyname"
-  enviroment = "dev"
+  enviroment = "main"
   base_name  = format("%s%s", local.assetname, local.enviroment)
 }
 
