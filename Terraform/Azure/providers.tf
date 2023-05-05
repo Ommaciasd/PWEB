@@ -16,6 +16,6 @@ provider "azurerm" {
       recover_soft_deleted_key_vaults = true
     }
   }
-  subscription_id = "cu3v74-4zur3" # Cuenta Azure
+  subscription_id = "cu3v74-4zur3"      # Cuenta Azure
   tenant_id       = "5v5cr1q710v-4zur3" # Suscripcion Azure
 }
