@@ -1,33 +1,44 @@
-# Network
+# Nanaykuna
+# Databases.
+db  = "db"
+sql = "sql"
+
+# Apps.
+wa = "webs"
+fa = "functions"
+endpoint = "functions"
+
+# Networking
 network = "10.30.0.0/16"
 public  = "10.30.0.0/24"
 private = "10.30.1.0/24"
 
-# Nanaykuna Resources.
-environment = "sta"
-saccount    = "noprodnotification"
-sdata       = "estabackofficestacc"
-internet    = "e-sta-gw-01"
-lan         = "e-sta-snet-01"
-vnet        = "e-sta-vnet"
-plan        = "app-sta"
-prod        = "app-prd"
-security    = "vm-bastionwin01-sta-e-nsg"
-key         = "ticketmanager-sta"
+# Insights.
+insights  = "app-insights"
+
+# Resources Groups.
+vm           = "vms"
+apps         = "apps"
+storage      = "storage"
+networking   = "networking"
 
 # DNS
-dns  = "sta-nanaykuna.azurewebsites.net"
-dns2 = "front-sta.progresolplus.pe"
-dns3 = "sta-nanaykuna-backoffice.azurewebsites.net"
-dns4 = "backoffice-sta.progresolplus.pe"
-dns5 = "sta-nanaykuna-bff-integration-infra.azurewebsites.net"
-dns6 = "sta-nanaykuna-ticket-manager.azurewebsites.net"
+dns3 = "mas.pe"
+dns  = "plus.pe"
+dns2 = "mas.com"
+dns4 = "plus.com"
+pdns = ".azurewebsites.net"
 
-# Insights.
-insights  = "sta-nanaykuna-app-insights"
+# Resources.
+environment = "sta"
+vnet        = "vnet"
+internet    = "gw-01"
+lan         = "snet-01"
+key         = "ticketmanager"
+security    = "vm-bastionwin01-nsg"
 
-# Nanaykuna Resources Groups.
-apps       = "apps"
-storage    = "storage"
-vm         = "vms"
-networking = "networking"
+# Azure Provider.
+destroy      = true
+resources    = false
+tenant       = "" # Suscripcion Nanaykuna STA.
+subscription = "" # Cuenta Azure STA.
