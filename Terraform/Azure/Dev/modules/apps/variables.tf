@@ -1,3 +1,72 @@
+variable "key" {
+  type        = string
+  description = "The Application Insights Key."
+}
+
+variable "connection" {
+  type        = string
+  description = "The Application Insights Connection ID."
+}
+
+locals {
+  extension   = "~2"
+  feature     = "1.0.0"
+  portal      = "ASP.NET"
+  key         = var.key
+  connection  = var.connection
+}
+
+variable "group" {
+  type        = string
+  description = "Resource group."
+}
+
+variable "plan" {
+  type        = string
+  description = "The service plan ID."
+}
+
+# SUBNETS.
+variable "public" {
+  type        = string
+  description = "The subnet's ID."
+}
+
+variable "private" {
+  type        = string
+  description = "The Private subnet's ID."
+}
+
+variable "storage" {
+  type        = string
+  description = "The storage account name."
+}
+
+variable "endpoint" {
+  type        = string
+  description = "The base name for every resource."
+}
+
+variable "environment" {
+  type = string
+  description = "The environment for all resources."
+}
+
+variable "function" {
+  type        = string
+  description = "The base name for every Function App."
+}
+
+variable "net" {
+  type        = string
+  description = "The base name for every Function App."
+}
+
+variable "node" {
+  type        = string
+  description = "The base name for every Function App."
+}
+
 locals {
   priority    = 1
   always      = true
@@ -5,49 +74,20 @@ locals {
   plan        = var.plan
   location    = "eastus"
   group       = var.group
-  public      = var.public
   private     = var.private
   storage     = var.storage
   ip          = "0.0.0.0/0"
-  assetname   = ""
+  assetname   = "nanaykuna"
   rule        = "Block Access Public"
   environment = var.environment
   subresource = "sites" # PSC subresource names.
   manual      = "false" # ENABLE PRIVATE LINK ENDPOINT.
-  function    = format("lfa%s%stf%s%s", local.assetname, var.environment, local.location, var.function)
-}
+  public      = var.public # ID PUBLIC SUBNET.
+  function    = format("lfa-%s-%s-tf-%s-%s", local.assetname, var.environment, local.location, var.function)
+  node        = format("lwa-%s-%s-tf-%s-%s", local.assetname, var.environment, local.location, var.node)
+  net         = format("lwa-%s-%s-tf-%s-%s", local.assetname, var.environment, local.location, var.net)
 
-variable "plan" {
-  type        = string
-  description = "The service plan's ID"
-}
-
-variable "group" {
-  type        = string
-  description = "The resource group's name"
-}
-
-
-variable "public" {
-  type        = string
-  description = "The subnet's ID"
-}
-
-variable "private" {
-  type        = string
-  description = "The subnet's ID"
-}
-variable "storage" {
-  type        = string
-  description = "The storage account's name"
-}
-
-variable "function" {
-  type        = string
-  description = "The base name for every resource"
-}
-
-variable "environment" {
-  type = string
-  description = "The environment for all resources"
+  # Private Endpoints.
+  endpoint    = format("pe-%s-%s-tf-%s-%s", local.assetname, var.environment, local.location, var.function)
+  pscendpoint = format("psce-%s-%s-tf-%s-%s", local.assetname, var.environment, local.location, var.function)
 }

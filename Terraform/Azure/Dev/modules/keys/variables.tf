@@ -2,7 +2,7 @@ locals {
   apps        = var.apps
   location    = "eastus"
   group       = var.group
-  assetname   = ""
+  assetname   = "nanaykuna"
   environment = var.environment
 }
 

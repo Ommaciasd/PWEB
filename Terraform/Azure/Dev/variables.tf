@@ -29,6 +29,7 @@ locals {
   internet    = var.internet
   insights    = var.insights
   environment = var.environment
+  vms         = var.vms
 
   # Azure Providers.
   tenant       = var.tenant
@@ -107,6 +108,10 @@ variable "environment" {
   type = string
 }
 
+variable "vms" {
+  type = string
+}
+
 # Azure Providers.
 variable "tenant" {
   type = string
@@ -128,77 +133,73 @@ variable "fa" {
   type = string
 }
 
-variable "webs" {
-  type = map(any)
+variable "app" {
+  type = map(object({
+    net      = string
+    node     = string
+    function = string
+  }))
+
   default = {
     "nanaykuna" = {
-      web = "nanaykuna"
+      node     = ""
+      net      = "nanaykuna"
+      function = "invoices-functions"
     },
 
     "storybook" = {
-      web = "storybook"
+      node     = ""
+      function = "payments"
+      net      = "storybook"
     },
 
     # BackOffice
-    "backoffice" = {
-      web = "backoffice"
-    },
-
-    "backoffice-ui" = {
-      web = "backoffice-ui"
-    },
-
     "backoffice-api" = {
-      web = "backoffice-api"
+      node     = "backoffice-ui"
+      net      = "backoffice-api"
+      function = "products-functions"
+    },
+
+    "backoffice" = {
+      node     = ""
+      net      = "backoffice"
+      function = "back-office-functions"
     },
 
     "ticket-manager" = {
-      web = "ticket-manager"
+      node     = ""
+      net      = "ticket-manager"
+      function = "shipping-dates"
     },
 
     "bff-integration-infra" = {
-      web = "bff-integration-infra"
-    }
-  }
-}
-
-variable "functions" {
-  type = map(any)
-  default = {
-    "payments" = {
-      function = "payments"
+      node     = ""
+      net      = "bff-integration-infra"
+      function = "shipping-experience"
     },
 
     "marketing" = {
+      net      = ""
+      node     = ""
       function = "marketing"
     },
 
     "notification" = {
+      net      = ""
+      node     = ""
       function = "notification"
     },
 
-    "shipping-dates" = {
-      function = "shipping-dates"
-    },
-
     "shipping-reports" = {
+      net      = ""
+      node     = ""
       function = "shipping-reports"
     },
 
     "customer-loyalty" = {
+      net      = ""
+      node     = ""
       function = "customer-loyalty"
-    },
-
-    "products-functions" = {
-      function = "products-functions"
-    },
-
-    "shipping-experience" = {
-      function = "shipping-experience"
-    },
-
-    "back-office-functions" = {
-      function = "back-office-functions"
     }
   }
 }

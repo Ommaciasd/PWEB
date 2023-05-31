@@ -1,6 +1,6 @@
 locals {
   location    = "eastus"
-  assetname   = ""
+  assetname   = "nanaykuna"
   environment = var.environment
   group       = var.group
   network     = var.network

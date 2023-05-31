@@ -1,3 +1,10 @@
+/* module "vms" {
+  source      = ".//modules//vms"
+  environment = local.environment
+  group       = module.groups.vms
+  vms         = local.vms
+}
+
 module "sql" {
   db          = local.db
   sql         = local.sql
@@ -11,7 +18,7 @@ module "keys" {
   group       = module.groups.apps
   source      = ".//modules//keys"
   apps        = local.key # Add Resource's Prefix + Name.
-}
+}*/
 
 module "plan" {
   environment = local.environment
@@ -25,7 +32,7 @@ module "storage" {
   environment = local.environment
   group       = module.groups.storage
   source      = ".//modules//storage"
-  private     = module.networking.function
+  private     = module.networking.functions
   apps        = local.apps # Add Resource's Prefix + Name.
 }
 
@@ -36,32 +43,24 @@ module "monitoring" {
   apps        = local.apps # Add Resource's Prefix + Name.
 }
 
-module "webs" {
-  for_each    = var.webs
+module "app" {
+  for_each    = var.app
   plan        = module.plan.web
-  web         = each.value["web"]
+  net         = each.value.net
+  node        = each.value.node
+  function    = each.value.function
   environment = local.environment
   group       = module.groups.apps
-  source      = ".//modules//webs"
   key         = module.monitoring.key
   connection  = module.monitoring.connection
-  public      = module.networking.web # ID PUBLIC SUBNET.
-}
-
-module "functions" {
-  for_each    = var.functions
+  public      = module.networking.webs # ID PUBLIC SUBNET.
   endpoint    = local.endpoint
-  environment = local.environment
-  group       = module.groups.apps
   storage     = module.storage.apps
-  plan        = module.plan.function
-  function    = each.value["function"]
-  source      = ".//modules//functions"
-  private     = module.networking.function
-  public      = module.networking.web # ID PUBLIC SUBNET.
+  source      = ".//modules//apps"
+  private     = module.networking.functions
 }
 
-module "dns" {
+/* module "dns" {
   source      = ".//modules//dns"
   environment = local.environment
   group       = module.groups.networking
@@ -70,7 +69,7 @@ module "dns" {
   dns2        = local.dns2 # Add Resource's Prefix + Name.
   dns3        = local.dns3 # Add Resource's Prefix + Name.
   dns4        = local.dns4 # Add Resource's Prefix + Name.
-}
+} */
 
 module "groups" {
   vm          = local.vm

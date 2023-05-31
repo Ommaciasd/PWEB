@@ -23,11 +23,11 @@ storage      = "storage"
 networking   = "networking"
 
 # DNS
-dns3 = "mas.pe"
-dns  = "plus.pe"
-dns2 = "mas.com"
-dns4 = "plus.com"
-pdns = ".azurewebsites.net"
+dns3 = "progresolmas.pe"
+dns  = "progresolplus.pe"
+dns2 = "progresolmas.com"
+dns4 = "progresolplus.com"
+pdns = "nanaykuna.azurewebsites.net"
 
 # Resources.
 environment = "sta"
@@ -40,5 +40,5 @@ security    = "vm-bastionwin01-nsg"
 # Azure Provider.
 destroy      = true
 resources    = false
-tenant       = "" # Suscripcion Nanaykuna STA.
-subscription = "" # Cuenta Azure STA.
+tenant       = "e4d8f2a9-2e24-4297-94cc-d8e3d3607ed1" # Suscripcion Nanaykuna STA.
+subscription = "d11da572-d15e-42c4-a61c-9bd28afc17ce" # Cuenta Azure STA.

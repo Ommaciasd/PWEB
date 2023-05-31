@@ -1,7 +1,7 @@
 # Outputs
 # Resource Groups.
 output "vms" {
-  value = module.groups.vm
+  value = module.groups.vms
 }
 
 output "apps" {
@@ -17,6 +17,15 @@ output "networking" {
 }
 
 # Storage Accounts.
-output "sapps" {
+/* output "sapps" {
   value = module.storage.apps
+} */
+
+# Networking.
+output "napps" {
+  value = module.networking.apps
+}
+
+output "webs" {
+  value = module.networking.webs
 }

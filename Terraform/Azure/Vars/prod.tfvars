@@ -17,11 +17,11 @@ private = "10.30.1.0/24"
 insights  = "app-insights"
 
 # DNS
-dns3 = "mas.pe"
-dns  = "plus.pe"
-dns2 = "mas.com"
-dns4 = "plus.com"
-pdns = ".azurewebsites.net"
+dns3 = "progresolmas.pe"
+dns  = "progresolplus.pe"
+dns2 = "progresolmas.com"
+dns4 = "progresolplus.com"
+pdns = "nanaykuna.azurewebsites.net"
 
 # Resources.
 environment = "prd"
@@ -34,5 +34,5 @@ security    = "vm-bastionwin01-nsg"
 # Azure Provider.
 destroy      = true
 resources    = false
-subscription = "" # Cuenta Azure PROD.
-tenant       = "" # Suscripcion Nanaykuna PROD.
+subscription = "443c2864-91d7-499d-877b-04179227ab3b" # Cuenta Azure PROD.
+tenant       = "e4d8f2a9-2e24-4297-94cc-d8e3d3607ed1" # Suscripcion Nanaykuna PROD.

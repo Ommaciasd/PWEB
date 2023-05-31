@@ -1,7 +1,7 @@
 locals {
   location    = "eastus"
   group       = var.group
-  assetname   = ""
+  assetname   = "nanaykuna"
   environment = var.environment
   type        = "web" # Application_type.
   apps        = format("ai-%s-%s-tf-%s-%s", local.assetname, var.environment, local.location, var.apps)

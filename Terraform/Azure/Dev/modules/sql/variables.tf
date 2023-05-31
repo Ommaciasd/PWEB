@@ -1,7 +1,7 @@
 locals {
   location    = "eastus"
   group       = var.group
-  assetname   = ""
+  assetname   = "nanaykuna"
   environment = var.environment
   db          = format("%s-SupportDb", var.environment)
   sql         = format("db%s-%s", var.environment, local.assetname)

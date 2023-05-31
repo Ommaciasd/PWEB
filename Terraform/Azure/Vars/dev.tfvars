@@ -23,11 +23,11 @@ storage      = "storage"
 networking   = "networking"
 
 # DNS
-dns3 = "mas.pe"
-dns  = "plus.pe"
-dns2 = "mas.com"
-dns4 = "plus.com"
-pdns = ".azurewebsites.net"
+dns3 = "progresolmas.pe"
+dns  = "progresolplus.pe"
+dns2 = "progresolmas.com"
+dns4 = "progresolplus.com"
+pdns = "nanaykuna.azurewebsites.net"
 
 # Resources.
 environment = "dev"
@@ -36,9 +36,10 @@ internet    = "gw-01"
 lan         = "snet-01"
 key         = "ticketmanager"
 security    = "vm-bastionwin01-nsg"
+vms         = "vms-agent-pipeline"
 
 # Azure Provider.
 destroy      = true
 resources    = false
-tenant       = "" # Suscripcion Nanaykuna Dev
-subscription = "" # Cuenta Azure Dev.
+subscription = "d11da572-d15e-42c4-a61c-9bd28afc17ce" # Cuenta Azure Dev.
+tenant       = "141d8fe2-bf63-4de7-8782-1e1b896f03c9" # Suscripcion Nanaykuna Dev

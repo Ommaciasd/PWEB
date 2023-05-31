@@ -1,6 +1,6 @@
 locals {
   location    = "eastus"
-  assetname   = ""
+  assetname   = "nanaykuna"
   environment = var.environment
   apps        = format("rg-%s-%s-tf-%s-%s", local.assetname, var.environment, local.location, var.apps)
   storage     = format("rg-%s-%s-tf-%s-%s", local.assetname, var.environment, local.location, var.storage)

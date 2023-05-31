@@ -1,5 +1,5 @@
 # Outputs
-output "vm" {
+output "vms" {
   value = azurerm_resource_group.vm.name
 }
 

@@ -1,7 +1,7 @@
 locals {
   location    = "eastus"
   group       = var.group
-  assetname   = ""
+  assetname   = "nanaykuna"
   environment = var.environment
   sku         = "B1"    # Service plan's sku.
   os          = "Linux" # Service plan's os_type.

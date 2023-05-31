@@ -9,7 +9,7 @@ locals {
   location    = "eastus"
   group       = var.group
   tier        = "Standard"
-  assetname   = ""
+  assetname   = "nanaykuna"
   private     = var.private
   environment = var.environment
   apps        = format("sa%s%s%s", local.assetname, local.environment, var.apps)
