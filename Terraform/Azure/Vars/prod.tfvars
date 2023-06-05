@@ -1,4 +1,4 @@
-# Nanaykuna
+# ENTERPRISE
 # Databases.
 db  = "db"
 sql = "sql"
@@ -6,33 +6,43 @@ sql = "sql"
 # Apps.
 wa = "webs"
 fa = "functions"
-endpoint = "functions"
+
+#Storage Accounts.
+sa  = "public"
+psa = "private"
 
 # Networking
 network = "10.30.0.0/16"
 public  = "10.30.0.0/24"
 private = "10.30.1.0/24"
 
-# Insights.
-insights  = "app-insights"
+# Resources Groups.
+vm         = "vms"
+apps       = "apps"
+storage    = "storage"
+networking = "networking"
 
-# DNS
-dns3 = "progresolmas.pe"
-dns  = "progresolplus.pe"
-dns2 = "progresolmas.com"
-dns4 = "progresolplus.com"
-pdns = "nanaykuna.azurewebsites.net"
+# Insights.
+insights = "app-insights"
 
 # Resources.
-environment = "prd"
+environment = "prod"
 vnet        = "vnet"
 internet    = "gw-01"
 lan         = "snet-01"
 key         = "ticketmanager"
 security    = "vm-bastionwin01-nsg"
+vms         = "vms-agent-pipeline"
+
+# DNS
+dns3 = "ORGANIZATIONmas.pe"
+dns  = "ORGANIZATIONplus.pe"
+dns2 = "ORGANIZATIONmas.com"
+dns4 = "ORGANIZATIONplus.com"
+pdns = "ENTERPRISE.azurewebsites.net"
 
 # Azure Provider.
 destroy      = true
 resources    = false
-subscription = "443c2864-91d7-499d-877b-04179227ab3b" # Cuenta Azure PROD.
-tenant       = "e4d8f2a9-2e24-4297-94cc-d8e3d3607ed1" # Suscripcion Nanaykuna PROD.
+subscription = "" # Cuenta Azure PROD.
+tenant       = "" # Suscripcion ENTERPRISE PROD.
