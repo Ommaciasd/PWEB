@@ -1,7 +1,7 @@
-variable "group" { type = string }
-variable "public" { type = string }
-variable "private" { type = string }
-variable "function" { type = string }
+variable "group"       { type = string }
+variable "public"      { type = string }
+variable "private"     { type = string }
+variable "function"    { type = string }
 variable "environment" { type = string }
 
 locals {

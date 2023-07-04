@@ -1,19 +1,17 @@
-# Terraform: Azure: Update scripts for Linux Function Apps!
+# Terraform: Azure: Update scripts for Linux Apps
 
-### Description.
+**## Description
 
 - Hi, I built many scripts for the DevOps phase, within the software lifecycle with deployment for Infrastructure as Code.
-- That you can update any changes to one or more repositories from Dev enviroment subscription in Azure with PaaS.
+- That you can update any changes to one or more repositories from every environment subscription in Azure with PaaS.
 
-
-## Requirements.
+## Requirements
 
 - Have a Azure subscription.
 - Have a local computer for the compilation of TF, JSON manifests (Terraform, Azure CLI)
 - Create or clone a project with repositories and modules, using a base structure to standardize.
 
-
-## Walkthrougth.
+## Walkthrougth
 
 - Clone or build a repository on the platform Azure DevOps, or on your local computer, in the development environment.
 - Synchronize each repository with its respective global for pull changes.
@@ -23,20 +21,23 @@
 - Upload new changes.
 - Evaluate the lifecycle of each script in the workflow and deploy as a trigger, just like the inputs, outputs, loops, modules, and fileconfig.
 
-## Stages.
+## Stages
 
-### Publish.
-- Use the standard structure for publishing the changes.
+## Publish
 
-#### version.tf
-~~~
+- Use the standard structure for publishing the changes
+
+## version.tf
+
+~~~ go
 terraform {
   required_version = ">= 1.3.7"
 }
 ~~~
 
-#### providers.tf
-~~~
+## providers.tf
+
+~~~ go
 # Define Terraform provider
 terraform {
 
@@ -51,212 +52,209 @@ terraform {
 
 provider "azurerm" {
   # Configure the Microsoft Azure Provider
-  features {}
-  environment     = var.enviroment-dev
-  subscription_id = "d11da572-d15e-42c4-a61c-9bd28afc17ce" # Cuenta Azure Dev
-  tenant_id       = "141d8fe2-bf63-4de7-8782-1e1b896f03c9" # Suscripcion Nanaykuna Dev
+  subscription_id = local.subscription
+  tenant_id       = local.tenant # Suscripcion Nanaykuna.
 }
 ~~~
 
-#### terraform.tfvars
-~~~
-# Network
-network-v-cidr   = "10.5.0.0/16"
-network-s-cidr   = "10.5.1.0/24"
-network-spe-cidr = "10.5.2.0/24"
+## terraform.tfvars
 
+~~~ go
 # Nanaykuna Enviroments.
-enviroment-dev  = "dev"
-enviroment-sta  = "sta"
-enviroment-prod = "prod"
+enviroment  = "dev", "sta", and "prod"
 ~~~
 
-#### variables.tf
-~~~
-# Deploy many resources from map, in a loop "for_each".
-variable "prefix" {
-  type = map(any)
+## variables.tf
+
+~~~ go
+variable "app" {
+  type = map(object({
+    net      = string
+    node     = string
+    function = string
+  }))
+
   default = {
-    "app" = {
-      name = "AppServer03"
-    }
-    "app2" = {
-      name = "AppServer02"
+    "nanaykuna" = {
+      node     = ""
+      net      = ""
+      function = ""
     },
-    "app3" = {
-      name = "AppServer05"
-    }
   }
 }
 
-variable "network-v-cidr" {
-  type = string
-}
+locals {
+  # Apps.
+  wa = ""
+  fa = ""
 
-variable "network-s-cidr" {
-  type = string
-}
+  # Storage Accounts.
+  sa  = ""
+  psa = ""
 
-variable "network-spe-cidr" {
-  type = string
-}
+  # Resources Groups.
+  vm         = ""
+  apps       = ""
+  storage    = ""
+  networking = ""
 
-variable "enviroment-dev" {
-  type = string
-}
+  # Resources.
+  lan         = ""
+  vms         = ""
+  public      = ""
+  network     = ""
+  private     = ""
+  internet    = ""
+  environment = var.environment
 
-variable "enviroment-sta" {
-  type = string
-}
-
-variable "enviroment-prod" {
-  type = string
-}
-~~~
-
-#### main.tf
-~~~
-module "resource-group" {
-  source     = ".//modules//resource-group"
-  name       = "name" # Add Resource's Prefix + Name.
-  enviroment = var.enviroment-dev
-}
-
-module "networking" {
-  source              = ".//modules//networking"
-  resource_group_name = module.resource-group.rg_name_out
-  name                = "name" # Add Resource's Prefix + Name.
-  name-s              = "name" # Add Subnet Linux Web App Name.
-  name-spe            = "name" # Add Subnet Linux Function App Name.
-  enviroment          = var.enviroment-dev
-  network-v-cidr      = var.network-v-cidr
-  network-s-cidr      = var.network-s-cidr
-  network-spe-cidr    = var.network-spe-cidr
-}
-
-module "storage-account" {
-  source              = ".//modules//storage-account"
-  name                = "name" # Add Resource's Prefix + Name.
-  resource_group_name = module.resource-group.rg_name_out
-  enviroment          = var.enviroment-dev
-}
-
-module "service-plan" {
-  source              = ".//modules//service-plan"
-  name                = "name" # Add Resource's Prefix + Name.
-  resource_group_name = module.resource-group.rg_name_out
-  enviroment          = var.enviroment-dev
-}
-
-module "linux-function-app" {
-  source               = ".//modules//linux-function-app"
-  name                 = each.value["name"]
-  for_each             = var.prefix
-  enviroment           = var.enviroment-dev
-  network-v-cidr       = var.network-v-cidr
-  network-s-cidr       = var.network-s-cidr
-  network-spe-cidr     = var.network-spe-cidr
-  resource_group_name  = module.resource-group.rg_name_out
-  service_plan_id      = module.service-plan.service_plan_id_out
-  storage_account_name = module.storage-account.storage_account_name_out
-  virtual_network_name = module.networking.v_name_out
-  subnet_id            = module.networking.subnet_id_out
-  subnet_spe_id        = module.networking.subnet_spe_id_out
+  # Azure Providers.
+  tenant       = var.tenant
+  destroy      = var.destroy
+  resources    = var.resources
+  subscription = var.suscription
 }
 ~~~
 
-### output.tf
+### main.tf
+
+~~~ go
+module "plan" {
+  environment = local.environment
+  source      = ".//modules//plan"
+  group       = module.groups.apps
+  web         = local.wa # Add Resources Prefix + Name.
+  function    = local.fa # Add Resources Prefix + Name.
+}
+
+module "monitoring" {
+  environment = local.environment
+  group       = module.groups.apps
+  source      = ".//modules//monitoring"
+  apps        = local.apps # Add Resources Prefix + Name.
+}
+
+module "storage" {
+  environment = local.environment
+  group       = module.groups.storage
+  source      = ".//modules//storage"
+  function    = module.networking.functions
+  public      = local.sa  # Add Resources Prefix + Name.
+  private     = local.psa # Add Resources Prefix + Name.
+}
+
+module "apps" {
+  for_each    = var.app
+  net         = each.value.net
+  node        = each.value.node
+  plan        = module.plan.web
+  environment = local.environment
+  group       = module.groups.apps
+  source      = ".//modules//apps"
+  function    = each.value.function
+  plan2       = module.plan.function
+  storage     = module.storage.public
+  key         = module.monitoring.key
+  private     = module.networking.functions
+  connection  = module.monitoring.connection
+  public      = module.networking.webs # ID PUBLIC SUBNET.
+}
+
+module "groups" {
+  environment = local.environment
+  source      = ".//modules//groups"
+  apps        = local.apps       # Add Resources Prefix + Name.
+  storage     = local.storage    # Add Resources Prefix + Name.
+  networking  = local.networking # Add Resources Prefix + Name.
+}
+
+  module "networking" {
+  public      = local.public
+  private     = local.private
+  network     = local.network
+  environment = local.environment
+  group       = module.groups.networking
+  source      = ".//modules//networking"
+  apps        = local.apps     # Add Resources Prefix + Name.
+  web         = local.internet # Add Subnet Linux Web App Name.
+  function    = local.lan      # Add Subnet Linux Function App Name.
+}
 ~~~
-# Outputs
-output "rgName" {
-  value = module.resource-group.rg_name_out
-}
 
-output "saName" {
-  value = module.storage-account.storage_account_name_out
-}
+### Build
 
-output "sID" {
-  value = module.networking.subnet_id_out
-}
-
-output "speID" {
-  value = module.networking.subnet_spe_id_out
-}
-
-output "spName" {
-  value = module.service-plan.sp_name_out
-}
-
-output "linux-function-app_name_out" {
-  value = toset([
-    for lfa in module.linux-function-app : lfa.linux-function-app_name_out
-  ])
-}
-~~~
-
-
-### Build.
 - Use the followings sentences for building the changes.
 
-#### Terraform Commands.
+#### Terraform Commands
+
+~~~ bash
+.\terragrunt.exe init --update
 ~~~
-terraform init --update
-~~~
+
 - **terraform:** API.
 - **init:** init the API.
 - **--update:** update the terraform version, and providers.
 
+~~~ bash
+.\terragrunt.exe get
 ~~~
-terraform get
-~~~
+
 - **get:** sincronice all terraform modules.
 
+~~~ bash
+.\terragrunt.exe fmt
 ~~~
-terraform fmt
-~~~
+
 - **fmt:** formating the sangria of every fileconfig tf of the Terraform Root module.
 
+## Test
 
-### Test.
 - Use the followings sentences for testing the changes.
 
-#### Terraform Commands.
+## Terraform_Commands
+
+~~~ go
+.\terragrunt.exe validate
 ~~~
-terraform validate
-~~~
+
 - **validate:** validate the semantic and sintaxis of the code.
 
+~~~ go
+.\terragrunt.exe plan "-var-file=.\Vars\ENVIRONMENT.tfvars"
 ~~~
-terraform plan -o "terraform.tfplan"
-~~~
-- **plan:** validate the changes in the terraform plan to build.
-- **-o:** output to a customized file-
-- **"file.tf":** name of file.tf to save the terraform plan, for apply the deploy of changes.
 
-~~~
+- **plan:** validate the changes in the terraform plan to build.
+- **-var-file:** output to a customized file-
+- **".\Vars\ENVIRONMENT.tfvars":** Path of file.tfvars to save the terraform plan, for apply the deploy of changes.
+
+~~~ go
 terraform output
 ~~~
+
 - **output:** validate the output values.
 
-~~~
+~~~ go
 terraform console
 ~~~
+
 - **console:** validate help or manual of the terraform CLI command.
 
+## Deploy
 
-### Deploy.
 - Use the followings sentences for deploying the changes.
 
-#### Terraform Commands.
+## Commands
+
+~~~ go
+.\terragrunt.exe apply -auto-approve "-var-file=.\Vars\ENVIRONMENT.tfvars"
 ~~~
-terraform apply --autoapprobe "terraform.tfplan"
-~~~
+
 - **apply:** aplicate the changes.
 - **-auto-approve:** auto approve the changes of the plan.
 
-~~~
+~~~ go
 terraform show state
 ~~~
+
 - **show:** show contente in the screen.
 - **state:** statefile of the current plan saved by terraform.
+**

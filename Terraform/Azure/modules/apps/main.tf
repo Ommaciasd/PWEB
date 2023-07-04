@@ -1,7 +1,80 @@
 #-------------------------------------
+# LWA Creation - Default is "true"
+#-------------------------------------
+resource "azurerm_linux_web_app" "net" {
+  tags = {
+    created_by  = local.created
+    environment = local.environment
+  }
+
+  name                = local.net
+  service_plan_id     = local.plan
+  resource_group_name = local.group
+  location            = local.location
+
+  site_config {
+    application_stack { dotnet_version = "6.0" }
+  }
+
+app_settings = {
+    "APPINSIGHTS_INSTRUMENTATIONKEY"             = local.key
+    "APPINSIGHTS_PORTALINFO"                     = local.portal
+    "APPINSIGHTS_PROFILERFEATURE_VERSION"        = local.feature
+    "ApplicationInsightsAgent_EXTENSION_VERSION" = local.extension
+    "APPLICATIONINSIGHTS_CONNECTION_STRING"      = local.connection
+  }
+}
+
+# ASVNSC Integration - Default is "true"
+resource "azurerm_app_service_virtual_network_swift_connection" "net" {
+  subnet_id      = local.public
+  app_service_id = azurerm_linux_web_app.net.id
+}
+
+#-------------------------------------
+# LWA Creation - Default is "true"
+#-------------------------------------
+resource "azurerm_linux_web_app" "react" {
+  tags = {
+    created_by  = local.created
+    environment = local.environment
+  }
+
+  name                = local.node
+  service_plan_id     = local.plan
+  resource_group_name = local.group
+  location            = local.location
+
+  site_config {
+    application_stack { node_version = "16-lts" }
+  }
+
+app_settings = {
+    "WEBSITE_NODE_DEFAULT_VERSION" = "16.0.0"
+#   "WEBSITE_RUN_FROM_PACKAGE"     = "https://github.com/<tu-usuario>/mi-aplicacion-react/tarball/master"
+    "APPINSIGHTS_INSTRUMENTATIONKEY"             = local.key
+    "APPINSIGHTS_PORTALINFO"                     = local.portal
+    "APPINSIGHTS_PROFILERFEATURE_VERSION"        = local.feature
+    "ApplicationInsightsAgent_EXTENSION_VERSION" = local.extension
+    "APPLICATIONINSIGHTS_CONNECTION_STRING"      = local.connection
+  }
+}
+
+# ASVNSC Integration - Default is "true"
+resource "azurerm_app_service_virtual_network_swift_connection" "react" {
+  subnet_id      = local.public
+  app_service_id = azurerm_linux_web_app.react.id
+}
+
+#-------------------------------------
 # LFA Creation - Default is "true"
 #-------------------------------------
 resource "azurerm_linux_function_app" "functions" {
+  tags = {
+    created_by  = local.created
+    environment = local.environment
+  }
+
   service_plan_id      = local.plan2
   resource_group_name  = local.group
   storage_account_name = local.storage
@@ -12,7 +85,6 @@ resource "azurerm_linux_function_app" "functions" {
 # auth_settings {
 #   token_refresh_extension_hours =
 # }
-
   site_config {
     always_on = local.always
 
@@ -23,11 +95,6 @@ resource "azurerm_linux_function_app" "functions" {
       action     = local.action
       priority   = local.priority
     }
-  }
-
-  tags = {
-    created_by  = local.created
-    environment = local.environment
   }
 }
 
@@ -50,75 +117,6 @@ resource "azurerm_private_endpoint" "functions" {
 
 # ASVNSC Integration - Default is "true"
 resource "azurerm_app_service_virtual_network_swift_connection" "functions" {
-  subnet_id      = local.public
+  subnet_id      = local.pfunction
   app_service_id = azurerm_linux_function_app.functions.id
-}
-
-#-------------------------------------
-# LWA Creation - Default is "true"
-#-------------------------------------
-resource "azurerm_linux_web_app" "react" {
-  name                = local.node
-  service_plan_id     = local.plan
-  resource_group_name = local.group
-  location            = local.location
-
-  site_config {
-#   linux_fx_version = "NODE|14-lts"
-  }
-
-  tags = {
-    created_by  = local.created
-    environment = local.environment
-  }
-
-app_settings = {
-    "WEBSITE_NODE_DEFAULT_VERSION" = "14.17.0"
-#   "WEBSITE_RUN_FROM_PACKAGE"     = "https://github.com/<tu-usuario>/mi-aplicacion-react/tarball/master"
-    "APPINSIGHTS_INSTRUMENTATIONKEY"             = local.key
-    "APPINSIGHTS_PORTALINFO"                     = local.portal
-    "APPINSIGHTS_PROFILERFEATURE_VERSION"        = local.feature
-    "ApplicationInsightsAgent_EXTENSION_VERSION" = local.extension
-    "APPLICATIONINSIGHTS_CONNECTION_STRING"      = local.connection
-  }
-}
-
-# ASVNSC Integration - Default is "true"
-resource "azurerm_app_service_virtual_network_swift_connection" "react" {
-  subnet_id      = local.public
-  app_service_id = azurerm_linux_web_app.react.id
-}
-
-#-------------------------------------
-# LWA Creation - Default is "true"
-#-------------------------------------
-resource "azurerm_linux_web_app" "net" {
-  name                = local.net
-  service_plan_id     = local.plan
-  resource_group_name = local.group
-  location            = local.location
-
-  site_config {
-#   dotnet_framework_version = "v6.0"
-#   scm_type                 = "LocalGit"
-  }
-
-  tags = {
-    created_by  = local.created
-    environment = local.environment
-  }
-
-app_settings = {
-    "APPINSIGHTS_INSTRUMENTATIONKEY"             = local.key
-    "APPINSIGHTS_PORTALINFO"                     = local.portal
-    "APPINSIGHTS_PROFILERFEATURE_VERSION"        = local.feature
-    "ApplicationInsightsAgent_EXTENSION_VERSION" = local.extension
-    "APPLICATIONINSIGHTS_CONNECTION_STRING"      = local.connection
-  }
-}
-
-# ASVNSC Integration - Default is "true"
-resource "azurerm_app_service_virtual_network_swift_connection" "net" {
-  subnet_id      = local.public
-  app_service_id = azurerm_linux_web_app.net.id
 }

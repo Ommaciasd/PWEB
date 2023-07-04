@@ -1,63 +1,18 @@
-variable "group" {
-  type        = string
-  description = "Resource group."
-}
-
-variable "plan" {
-  type        = string
-  description = "The service plan ID."
-}
-
-variable "plan2" {
-  type        = string
-  description = "The service plan ID."
-}
-
 # SUBNETS.
-variable "public" {
-  type        = string
-  description = "The subnet's ID."
-}
+variable "public"      { type = string }
+variable "private"     { type = string }
+variable "pfunction"   { type = string }
 
-variable "private" {
-  type        = string
-  description = "The Private subnet's ID."
-}
-
-variable "storage" {
-  type        = string
-  description = "The storage account name."
-}
-
-variable "key" {
-  type        = string
-  description = "The Application Insights Key."
-}
-
-variable "environment" {
-  type = string
-  description = "The environment for all resources."
-}
-
-variable "function" {
-  type        = string
-  description = "The base name for every Function App."
-}
-
-variable "net" {
-  type        = string
-  description = "The base name for every .NET Web App."
-}
-
-variable "node" {
-  type        = string
-  description = "The base name for every React Web App."
-}
-
-variable "connection" {
-  type        = string
-  description = "The Application Insights Connection ID."
-}
+variable "key"         { type = string }
+variable "net"         { type = string }
+variable "node"        { type = string }
+variable "plan"        { type = string }
+variable "plan2"       { type = string }
+variable "group"       { type = string }
+variable "storage"     { type = string }
+variable "function"    { type = string }
+variable "connection"  { type = string }
+variable "environment" { type = string }
 
 locals {
   priority    = 1
@@ -79,9 +34,10 @@ locals {
   connection  = var.connection
   environment = var.environment
   rule        = "Block Access Public"
-  public      = var.public # ID PUBLIC SUBNET.
-  subresource = "sites" # PSC subresource names.
-  manual      = "false" # ENABLE PRIVATE LINK ENDPOINT.
+  public      = var.public    # ID PUBLIC SUBNET.
+  subresource = "sites"       # PSC subresource names.
+  manual      = "false"       # ENABLE PRIVATE LINK ENDPOINT.
+  pfunction   = var.pfunction # ID PUBLIC SUBNET APP Functions.
   net         = format("lwa-%s-%s-tf-%s-%s", local.assetname, var.environment, local.location, var.net)
   node        = format("lwa-%s-%s-tf-%s-%s", local.assetname, var.environment, local.location, var.node)
   function    = format("lfa-%s-%s-tf-%s-%s", local.assetname, var.environment, local.location, var.function)

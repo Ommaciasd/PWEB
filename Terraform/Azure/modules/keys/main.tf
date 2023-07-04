@@ -9,15 +9,6 @@ resource "azurerm_key_vault" "keys-apps" {
     environment = local.environment
   }
 
-  sku_name = "standard"
-  name                        = local.apps
-  soft_delete_retention_days  = local.days
-  resource_group_name         = local.group
-  location                    = local.location
-  purge_protection_enabled    = local.protection
-  enabled_for_disk_encryption = local.encryption
-  tenant_id                   = data.azurerm_client_config.apps.tenant_id
-
   access_policy {
     key_permissions = [
       "${local.permissions}",
@@ -34,4 +25,13 @@ resource "azurerm_key_vault" "keys-apps" {
     tenant_id = data.azurerm_client_config.apps.tenant_id
     object_id = data.azurerm_client_config.apps.object_id
   }
+
+  sku_name                    = local.sku
+  name                        = local.apps
+  soft_delete_retention_days  = local.days
+  resource_group_name         = local.group
+  location                    = local.location
+  purge_protection_enabled    = local.protection
+  enabled_for_disk_encryption = local.encryption
+  tenant_id                   = data.azurerm_client_config.apps.tenant_id
 }

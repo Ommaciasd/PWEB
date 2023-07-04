@@ -12,8 +12,7 @@
   resource_group_name      = local.group
   name                     = local.public
   location                 = local.location
-}
-
+ }
 
   resource "azurerm_storage_account" "private" {
   tags                     = {
@@ -27,7 +26,7 @@
   resource_group_name      = local.group
   name                     = local.private
   location                 = local.location
-}
+ }
 
 /*
 resource "azurerm_storage_container" "azure-webjobs-hosts" {

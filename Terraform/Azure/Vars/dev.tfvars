@@ -1,4 +1,4 @@
-# ORGANIZATION
+# Nanaykuna
 # Databases.
 db  = "db"
 sql = "sql"
@@ -11,38 +11,36 @@ fa = "functions"
 sa  = "public"
 psa = "private"
 
-# Networking
-network = "10.30.0.0/16"
-public  = "10.30.0.0/24"
-private = "10.30.1.0/24"
-
 # Resources Groups.
 vm         = "vms"
 apps       = "apps"
 storage    = "storage"
 networking = "networking"
 
-# Insights.
-insights = "app-insights"
+# Networking
+network   = "10.10.0.0/16"
+public    = "10.10.0.0/24"
+private   = "10.10.1.0/24"
+pfunction = "10.10.2.0/24"
 
 # Resources.
 environment = "dev"
-vnet        = "vnet"
 internet    = "gw-01"
 lan         = "snet-01"
+ifunction   = "ifunction"
 key         = "ticketmanager"
-security    = "vm-bastionwin01-nsg"
 vms         = "vms-agent-pipeline"
+security    = "vm-bastionwin01-nsg"
 
 # DNS
-dns3 = "ENTERPRISEmas.pe"
-dns  = "ENTERPRISEplus.pe"
-dns2 = "ENTERPRISEmas.com"
-dns4 = "ENTERPRISEplus.com"
-pdns = "ORGANIZATION.azurewebsites.net"
+dns3 = "progresolmas.pe"
+dns  = "progresolplus.pe"
+dns2 = "progresolmas.com"
+dns4 = "progresolplus.com"
+pdns = "nanaykuna.azurewebsites.net"
 
 # Azure Provider.
 destroy      = true
 resources    = false
-subscription = "" # Cuenta Azure Dev.
-tenant       = "" # Suscripcion ORGANIZATION Dev
+subscription = "d11da572-d15e-42c4-a61c-9bd28afc17ce" # Cuenta Azure Dev.
+tenant       = "141d8fe2-bf63-4de7-8782-1e1b896f03c9" # Suscripcion Nanaykuna Dev

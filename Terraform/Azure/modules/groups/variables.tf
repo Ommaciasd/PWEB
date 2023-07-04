@@ -1,26 +1,8 @@
-variable "environment" {
-  type = string
-}
-
-variable "vm" {
-  type        = string
-  description = "The name for every resource"
-}
-
-variable "apps" {
-  type        = string
-  description = "The name for every resource"
-}
-
-variable "storage" {
-  type        = string
-  description = "The name for every resource"
-}
-
-variable "networking" {
-  type        = string
-  description = "The name for every resource"
-}
+variable "vm"          { type = string }
+variable "apps"        { type = string }
+variable "storage"     { type = string }
+variable "networking"  { type = string }
+variable "environment" { type = string }
 
 locals {
   location    = "eastus"

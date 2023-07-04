@@ -1,18 +1,3 @@
-# configure Azure DNS for internal name resolution.
-# dev-nanaykuna.azurewebsites.net
-resource "azurerm_private_dns_zone" "private" {
-  resource_group_name = local.group
-  name                = local.private
-  soa_record {
-    tags = {
-      created_by  = local.created
-      environment = local.environment
-    }
-
-    email = "azureprivatedns-host.microsoft.com"
-  }
-}
-
 # Configure Azure DNS for Public name resolution.
 # progresolplus.pe
 resource "azurerm_dns_zone" "dns" {
@@ -27,6 +12,22 @@ resource "azurerm_dns_zone" "dns" {
 
     host_name = "ns1-34.azure-dns.com"
     email     = "azuredns-hostmaster.microsoft.com"
+  }
+}
+
+# configure Azure DNS for internal name resolution.
+# dev-nanaykuna.azurewebsites.net
+resource "azurerm_private_dns_zone" "private" {
+  resource_group_name = local.group
+  name                = local.private
+
+  soa_record {
+    tags = {
+      created_by  = local.created
+      environment = local.environment
+    }
+
+    email = "azureprivatedns-host.microsoft.com"
   }
 }
 
@@ -121,13 +122,14 @@ resource "azurerm_dns_txt_record" "progresolplus-pe-asuid" {
     value = "39m027n32gqb70j39q18560626"
   }
 
+  record {
+    value = "ca3-5ee24f2150274d099ceecbf5fb043244"
+  }
+
   ttl                 = local.ttl
   resource_group_name = local.group
   zone_name           = azurerm_dns_zone.dns.name
   name                = "progresolplus.pe.asuid.backoffice"
-  record {
-    value = "ca3-5ee24f2150274d099ceecbf5fb043244"
-  }
 
   record {
     value = "v=spf1 include:spf.protection.outlook.com -all"
@@ -198,7 +200,6 @@ resource "azurerm_dns_a_record" "www" {
   zone_name           = azurerm_dns_zone.dns.name
 }
 
-
 # progresolmas.com
 resource "azurerm_dns_zone" "dns2" {
   name                = local.dns2
@@ -222,7 +223,6 @@ resource "azurerm_dns_zone" "dns2" {
   ttl                 = local.ttl2
   records              = ["ns1-33.azure-dns.com", "ns2-33.azure-dns.net", "ns3-33.azure-dns.org", "ns4-33.azure-dns.info"]
 } */
-
 
 # progresolmas.pe
 resource "azurerm_dns_zone" "dns3" {
@@ -256,7 +256,6 @@ resource "azurerm_dns_a_record" "progresolmas-test" {
   zone_name           = azurerm_dns_zone.dns3.name
 }
 
-
 # progresolplus.com
 resource "azurerm_dns_zone" "dns4" {
   name                = local.dns4
@@ -267,7 +266,7 @@ resource "azurerm_dns_zone" "dns4" {
       created_by  = local.created
       environment = local.environment
     }
-    
+
     host_name = "ns1-37.azure-dns.com"
     email     = "azuredns-hostmaster.microsoft.com"
   }

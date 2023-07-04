@@ -1,21 +1,7 @@
-variable "environment" {
-  type = string
-}
-
-variable "db" {
-  type        = string
-  description = "The resource db's name"
-}
-
-variable "sql" {
-  type        = string
-  description = "The resource sql's name"
-}
-
-variable "group" {
-  type        = string
-  description = "The resource group's name"
-}
+variable "db"          { type = string }
+variable "sql"         { type = string }
+variable "group"       { type = string }
+variable "environment" { type = string }
 
 locals {
   gb            = "4"

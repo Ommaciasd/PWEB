@@ -1,21 +1,7 @@
-variable "environment" {
-  type = string
-}
-
-variable "web" {
-  type        = string
-  description = "The name for every resource"
-}
-
-variable "group" {
-  type        = string
-  description = "The resource group's name"
-}
-
-variable "function" {
-  type        = string
-  description = "The name for every resource"
-}
+variable "web"         { type = string }
+variable "group"       { type = string }
+variable "function"    { type = string }
+variable "environment" { type = string }
 
 locals {
   location    = "eastus"

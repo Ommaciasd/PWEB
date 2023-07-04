@@ -1,12 +1,3 @@
-variable "group" {
-  type        = string
-  description = "The resource group's name"
-}
-
-variable "environment" {
-  type = string
-}
-
 locals {
   days        = "7"
   permissions = "Get"
@@ -15,12 +6,11 @@ locals {
   apps        = var.apps
   location    = "eastus"
   group       = var.group
+  sku         = "standard"
   created     = "terraform"
-  assetname   = "nanaykuna"
   environment = var.environment
 }
 
-variable "apps" {
-  type        = string
-  description = "The base name for every resource"
-}
+variable "apps"        { type = string }
+variable "group"       { type = string }
+variable "environment" { type = string }

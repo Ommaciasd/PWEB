@@ -1,17 +1,6 @@
-variable "group" {
-  type        = string
-  description = "Resource group."
-}
-
-variable "environment" {
-  type = string
-  description = "The environment for all resources."
-}
-
-variable "vms" {
-  type = string
-  description = "The environment for all resources."
-}
+variable "vms"         { type = string }
+variable "group"       { type = string }
+variable "environment" { type = string }
 
 locals {
   location    = "eastus"

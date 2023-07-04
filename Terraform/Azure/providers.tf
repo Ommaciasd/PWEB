@@ -11,7 +11,7 @@ terraform {
 provider "azurerm" {
   # Configure the Microsoft Azure Provider
   subscription_id = local.subscription
-  tenant_id       = local.tenant # Suscripcion Nanaykuna Dev
+  tenant_id       = local.tenant # Suscripcion Nanaykuna
 
   features {
     key_vault {

@@ -1,19 +1,17 @@
-# Terraform: Azure: Update scripts for Linux Web Apps!
+# Terraform: Azure: Update scripts for Key Vaults
 
-### Description.
+## Description
 
 - Hi, I built many scripts for the DevOps phase, within the software lifecycle with deployment for Infrastructure as Code.
-- That you can update any changes to one or more repositories from Dev enviroment subscription in Azure with PaaS.
+- That you can update any changes to one or more repositories from every environment subscription in Azure with PaaS.
 
-
-## Requirements.
+## Requirements
 
 - Have a Azure subscription.
 - Have a local computer for the compilation of TF, JSON manifests (Terraform, Azure CLI)
 - Create or clone a project with repositories and modules, using a base structure to standardize.
 
-
-## Walkthrougth.
+## Walkthrougth
 
 - Clone or build a repository on the platform Azure DevOps, or on your local computer, in the development environment.
 - Synchronize each repository with its respective global for pull changes.
@@ -23,43 +21,23 @@
 - Upload new changes.
 - Evaluate the lifecycle of each script in the workflow and deploy as a trigger, just like the inputs, outputs, loops, modules, and fileconfig.
 
-## Stages.
+## Stages
 
-### Publish.
-- Use the standard structure for publishing the changes.
+## Publish
 
-#### version.tf
-~~~
+- Use the standard structure for publishing the changes
+
+## version.tf
+
+~~~ go
 terraform {
   required_version = ">= 1.3.7"
 }
 ~~~
 
-#### terraform.tfvars
-~~~
-# Nanaykuna Enviroments.
-enviroment-dev  = "dev"
-enviroment-sta  = "sta"
-enviroment-prod = "prod"
-~~~
+## providers.tf
 
-#### variables.tf
-~~~
-variable "enviroment-dev" {
-  type = string
-}
-
-variable "enviroment-sta" {
-  type = string
-}
-
-variable "enviroment-prod" {
-  type = string
-}
-~~~
-
-#### providers.tf
-~~~
+~~~ go
 # Define Terraform provider
 terraform {
 
@@ -76,109 +54,116 @@ provider "azurerm" {
   # Configure the Microsoft Azure Provider
   features {}
   environment     = var.enviroment-dev
-  subscription_id = "d11da572-d15e-42c4-a61c-9bd28afc17ce" # Cuenta Azure Dev
-  tenant_id       = "141d8fe2-bf63-4de7-8782-1e1b896f03c9" # Suscripcion Nanaykuna Dev
+  subscription_id = "" # Cuenta Azure Dev
+  tenant_id       = "" # Suscripcion Nanaykuna Dev
 }
 ~~~
 
-#### main.tf
-~~~
-module "resource-group" {
-  source     = ".//modules//resource-group"
-  name       = "name" # Add Resource's Group Name.
-  enviroment = var.enviroment-dev
-}
+## terraform.tfvars
 
-module "application-insights" {
-  source              = ".//modules//application-insights"
-  name                = "name" # Add Resource's Application Insights Name.
-  enviroment          = var.enviroment-dev
-  resource_group_name = module.resource-group.resource-group_name_out
-}
+~~~ go
+# Nanaykuna Enviroments.
+enviroment  = "dev", "sta", and "prod"
 ~~~
 
-### output.tf
-~~~
-# Outputs
-output "resource-group_name_out" {
-  value = module.resource-group.resource-group_name_out
-}
+## variables.tf
 
-output "instrumentation_key_out" {
-  value     = module.application-insights.instrumentation_key_out
-  sensitive = true
-}
-
-output "app_id_out" {
-  value = module.application-insights.app_id_out
-}
+~~~ go
+variable "enviroment" { type = string }
 ~~~
 
+### main.tf
 
-### Build.
+~~~ go
+module "groups" {
+  environment = local.environment
+  source      = ".//modules//groups"
+  apps        = local.apps # Add Resources Prefix + Name.
+}
+
+module "monitoring" {
+  environment = local.environment
+  group       = module.groups.apps
+  source      = ".//modules//monitoring"
+  apps        = local.apps # Add Resources Prefix + Name.
+}
+
+~~~
+
+### Build
+
 - Use the followings sentences for building the changes.
 
-#### Terraform Commands.
+#### Terraform Commands
 
+~~~ bash
+.\terragrunt.exe init --update
 ~~~
-terraform init --update
-~~~
+
 - **terraform:** API.
 - **init:** init the API.
 - **--update:** update the terraform version, and providers.
 
+~~~ bash
+.\terragrunt.exe get
 ~~~
-terraform get
-~~~
+
 - **get:** sincronice all terraform modules.
 
+~~~ bash
+.\terragrunt.exe fmt
 ~~~
-terraform fmt
-~~~
+
 - **fmt:** formating the sangria of every fileconfig tf of the Terraform Root module.
 
+## Test
 
-### Test.
 - Use the followings sentences for testing the changes.
 
-#### Terraform Commands.
+## Terraform_Commands
 
+~~~ go
+.\terragrunt.exe validate
 ~~~
-terraform validate
-~~~
+
 - **validate:** validate the semantic and sintaxis of the code.
 
+~~~ go
+.\terragrunt.exe plan "-var-file=.\Vars\ENVIRONMENT.tfvars"
 ~~~
-terraform plan -o "terraform.tfplan"
-~~~
-- **plan:** validate the changes in the terraform plan to build.
-- **-o:** output to a customized file-
-- **"file.tf":** name of file.tf to save the terraform plan, for apply the deploy of changes.
 
-~~~
+- **plan:** validate the changes in the terraform plan to build.
+- **-var-file:** output to a customized file-
+- **".\Vars\ENVIRONMENT.tfvars":** Path of file.tfvars to save the terraform plan, for apply the deploy of changes.
+
+~~~ go
 terraform output
 ~~~
+
 - **output:** validate the output values.
 
-~~~
+~~~ go
 terraform console
 ~~~
+
 - **console:** validate help or manual of the terraform CLI command.
 
+## Deploy
 
-### Deploy.
 - Use the followings sentences for deploying the changes.
 
-#### Terraform Commands.
+## Commands
 
+~~~ go
+.\terragrunt.exe apply -auto-approve "-var-file=.\Vars\ENVIRONMENT.tfvars"
 ~~~
-terraform apply --autoapprobe "terraform.tfplan"
-~~~
+
 - **apply:** aplicate the changes.
 - **-auto-approve:** auto approve the changes of the plan.
 
-~~~
+~~~ go
 terraform show state
 ~~~
+
 - **show:** show contente in the screen.
 - **state:** statefile of the current plan saved by terraform.

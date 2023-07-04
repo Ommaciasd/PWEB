@@ -24,19 +24,35 @@ resource "azurerm_subnet" "function" {
 }
 
 resource "azurerm_subnet" "web" {
+  delegation {
+    name = local.dweb
+
+    service_delegation {
+      actions = [local.actions]
+      name    = local.microsoft
+    }
+  }
+
   name                 = local.web
   resource_group_name  = local.group
   address_prefixes     = [local.public]
   virtual_network_name = azurerm_virtual_network.apps.name
+}
 
+resource "azurerm_subnet" "pfunction" {
   delegation {
-    name = "${local.web}-delegation"
+    name = local.difunction
 
     service_delegation {
-      name    = "Microsoft.Web/serverFarms"
-      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+      actions = [local.actions]
+      name    = local.microsoft
     }
   }
+
+  resource_group_name  = local.group
+  name                 = local.ifunction
+  address_prefixes     = [local.pfunction]
+  virtual_network_name = azurerm_virtual_network.apps.name
 }
 
 #-----------------------------------------

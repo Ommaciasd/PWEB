@@ -1,4 +1,4 @@
-# Create Resources Groups
+# Create Resources Groups.
 resource "azurerm_resource_group" "vm" {
   name     = local.vm
   location = local.location
