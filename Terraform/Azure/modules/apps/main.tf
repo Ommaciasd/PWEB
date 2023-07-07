@@ -1,4 +1,14 @@
 #-------------------------------------
+# Random Variable - Default is "true"
+#-------------------------------------
+resource "random_string" "api_key_secret" {
+  upper            = local.always
+  special          = local.always
+  length           = local.length
+  override_special = local.override
+}
+
+#-------------------------------------
 # LWA Creation - Default is "true"
 #-------------------------------------
 resource "azurerm_linux_web_app" "net" {
@@ -13,15 +23,26 @@ resource "azurerm_linux_web_app" "net" {
   location            = local.location
 
   site_config {
-    application_stack { dotnet_version = "6.0" }
+    application_stack { dotnet_version = local.dotnet }
   }
 
 app_settings = {
-    "APPINSIGHTS_INSTRUMENTATIONKEY"             = local.key
-    "APPINSIGHTS_PORTALINFO"                     = local.portal
-    "APPINSIGHTS_PROFILERFEATURE_VERSION"        = local.feature
-    "ApplicationInsightsAgent_EXTENSION_VERSION" = local.extension
-    "APPLICATIONINSIGHTS_CONNECTION_STRING"      = local.connection
+    "TZ"                                              = local.tz
+    "APPINSIGHTS_INSTRUMENTATIONKEY"                  = local.key
+    "WEBSITE_HTTPLOGGING_RETENTION_DAYS"              = local.days
+    "APPINSIGHTS_PORTALINFO"                          = local.portal
+    "SnapshotDebugger_EXTENSION_VERSION"              = local.feature
+    "APPINSIGHTS_PROFILERFEATURE_VERSION"             = local.feature
+    "APPINSIGHTS_SNAPSHOTFEATURE_VERSION"             = local.feature
+    "DiagnosticServices_EXTENSION_VERSION"            = local.feature
+    "XDT_MicrosoftApplicationInsights_Mode"           = local.feature
+    "InstrumentationEngine_EXTENSION_VERSION"         = local.feature
+    "XDT_MicrosoftApplicationInsights_PreemptSdk"     = local.feature
+    "XDT_MicrosoftApplicationInsights_BaseExtensions" = local.feature
+    "ApplicationInsightsAgent_EXTENSION_VERSION"      = local.extension
+    "ASPNETCORE_ENVIRONMENT"                          = local.aspnetcore
+    "APPLICATIONINSIGHTS_CONNECTION_STRING"           = local.connection
+    "API_KEY_SECRET"                                  = random_string.api_key_secret.result
   }
 }
 
@@ -46,17 +67,26 @@ resource "azurerm_linux_web_app" "react" {
   location            = local.location
 
   site_config {
-    application_stack { node_version = "16-lts" }
+    application_stack { node_version = local.vnode }
   }
 
 app_settings = {
-    "WEBSITE_NODE_DEFAULT_VERSION" = "16.0.0"
-#   "WEBSITE_RUN_FROM_PACKAGE"     = "https://github.com/<tu-usuario>/mi-aplicacion-react/tarball/master"
-    "APPINSIGHTS_INSTRUMENTATIONKEY"             = local.key
-    "APPINSIGHTS_PORTALINFO"                     = local.portal
-    "APPINSIGHTS_PROFILERFEATURE_VERSION"        = local.feature
-    "ApplicationInsightsAgent_EXTENSION_VERSION" = local.extension
-    "APPLICATIONINSIGHTS_CONNECTION_STRING"      = local.connection
+    "TZ"                                              = local.tz
+    "APPINSIGHTS_INSTRUMENTATIONKEY"                  = local.key
+    "WEBSITE_HTTPLOGGING_RETENTION_DAYS"              = local.days
+    "APPINSIGHTS_PORTALINFO"                          = local.portal
+    "SnapshotDebugger_EXTENSION_VERSION"              = local.feature
+    "APPINSIGHTS_PROFILERFEATURE_VERSION"             = local.feature
+    "APPINSIGHTS_SNAPSHOTFEATURE_VERSION"             = local.feature
+    "DiagnosticServices_EXTENSION_VERSION"            = local.feature
+    "XDT_MicrosoftApplicationInsights_Mode"           = local.feature
+    "InstrumentationEngine_EXTENSION_VERSION"         = local.feature
+    "XDT_MicrosoftApplicationInsights_PreemptSdk"     = local.feature
+    "XDT_MicrosoftApplicationInsights_BaseExtensions" = local.feature
+    "ApplicationInsightsAgent_EXTENSION_VERSION"      = local.extension
+    "ASPNETCORE_ENVIRONMENT"                          = local.aspnetcore
+    "APPLICATIONINSIGHTS_CONNECTION_STRING"           = local.connection
+    "API_KEY_SECRET"                                  = random_string.api_key_secret.result
   }
 }
 
@@ -95,6 +125,30 @@ resource "azurerm_linux_function_app" "functions" {
       action     = local.action
       priority   = local.priority
     }
+  }
+
+  app_settings = {
+    "TZ"                                              = local.tz
+    "APPINSIGHTS_INSTRUMENTATIONKEY"                  = local.key
+    "WEBSITE_HTTPLOGGING_RETENTION_DAYS"              = local.days
+    "AzureWebJobsSecretStorageType"                   = local.file
+    "APPINSIGHTS_PORTALINFO"                          = local.portal
+    "WEBSITE_ENABLE_SYNC_UPDATE_SITE"                 = local.always
+    "WEBSITES_ENABLE_APP_SERVICE_STORAGE"             = local.always
+    "FUNCTIONS_WORKER_RUNTIME"                        = local.runtime
+    "SnapshotDebugger_EXTENSION_VERSION"              = local.feature
+    "APPINSIGHTS_PROFILERFEATURE_VERSION"             = local.feature
+    "APPINSIGHTS_SNAPSHOTFEATURE_VERSION"             = local.feature
+    "DiagnosticServices_EXTENSION_VERSION"            = local.feature
+    "XDT_MicrosoftApplicationInsights_Mode"           = local.feature
+    "InstrumentationEngine_EXTENSION_VERSION"         = local.feature
+    "XDT_MicrosoftApplicationInsights_PreemptSdk"     = local.feature
+    "XDT_MicrosoftApplicationInsights_BaseExtensions" = local.feature
+    "ApplicationInsightsAgent_EXTENSION_VERSION"      = local.extension
+    "FUNCTION_ENVIRONMENT"                            = local.aspnetcore
+    "FUNCTIONS_EXTENSION_VERSION"                     = local.efunctions
+    "APPLICATIONINSIGHTS_CONNECTION_STRING"           = local.connection
+    "API_KEY_SECRET"                                  = random_string.api_key_secret.result
   }
 }
 

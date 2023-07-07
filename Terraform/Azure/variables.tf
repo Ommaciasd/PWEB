@@ -8,37 +8,37 @@ variable "db" { type = string }
 variable "sql" { type = string }
 
 #Storage Accounts.
-variable "sa"         { type = string }
-variable "psa"        { type = string }
+variable "sa" { type = string }
+variable "psa" { type = string }
 
 # Resources.
-variable "vms"         { type = string }
-variable "lan"         { type = string }
-variable "dns"         { type = string }
-variable "key"         { type = string }
-variable "pdns"        { type = string }
-variable "dns2"        { type = string }
-variable "dns3"        { type = string }
-variable "dns4"        { type = string }
-variable "public"      { type = string }
-variable "network"      { type = string }
-variable "private"      { type = string }
-variable "internet"     { type = string }
-variable "security"     { type = string }
-variable "pfunction"    { type = string }
-variable "ifunction"    { type = string }
-variable "environment"  { type = string }
+variable "vms" { type = string }
+variable "lan" { type = string }
+variable "dns" { type = string }
+variable "key" { type = string }
+variable "pdns" { type = string }
+variable "dns2" { type = string }
+variable "dns3" { type = string }
+variable "dns4" { type = string }
+variable "public" { type = string }
+variable "network" { type = string }
+variable "private" { type = string }
+variable "internet" { type = string }
+variable "security" { type = string }
+variable "pfunction" { type = string }
+variable "ifunction" { type = string }
+variable "environment" { type = string }
 
 # Resources Groups.
-variable "vm"           { type = string }
-variable "apps"         { type = string }
-variable "storage"      { type = string }
-variable "networking"   { type = string }
+variable "vm" { type = string }
+variable "apps" { type = string }
+variable "storage" { type = string }
+variable "networking" { type = string }
 
 # Azure Providers.
-variable "destroy"      {}
-variable "resources"    {}
-variable "tenant"       { type = string }
+variable "destroy" {}
+variable "resources" {}
+variable "tenant" { type = string }
 variable "subscription" { type = string }
 
 locals {

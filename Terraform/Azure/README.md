@@ -117,6 +117,8 @@ locals {
 
 ### main.tf
 
+- First deploy for all base resources without Apps and Compute.
+
 ~~~ go
 module "sql" {
   db          = local.db
@@ -192,6 +194,11 @@ module "networking" {
   pfunction   = local.pfunction # Add Subnet Public Linux Function App Name.
 }
 
+~~~
+
+- Second deploy for every App and Compute. &hios for active VNet, after Networking Builded and deployed in the tenenat over suscription!
+
+~~~ go
 module "apps" {
   for_each    = var.app
   net         = each.value.net

@@ -13,3 +13,13 @@ Initial release
 
 - Update : Networking, Apps, Storage, Monitoring, SQL, DNS on Module for deploy.
 - Migrate: true for the new instances with the script from this module.
+
+## Version [1.2.0]
+
+### Date: 07/07/2023
+
+- Integrate: Add Environment Variable "ASPNETCORE_ENVIRONMENT" for Application Settings in every Linux Web App with DotNet & Node.
+- Integrate: Random String on Module Apps in Nanaykuna for nexts deploys.
+- Integrate: Add Environment Variable "API_KEY_SECRET" for Application Settings in every Linux Web App with DotNet & Node.
+
+![Alt text](image.png)
