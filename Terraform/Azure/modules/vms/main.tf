@@ -1,47 +1,42 @@
-#-------------------------------------
-# VM Creation - Default is "true"
-#-------------------------------------
-resource "azurerm_network_interface" "agents" {
-  name                = local.vms
-  resource_group_name = local.group
-  location            = local.location
-
+resource "azurerm_network_interface" "robot" {
+  name                      = "my-network-interface"
+  location                  = local.location
+  resource_group_name       = local.group
   ip_configuration {
-    name                          = "internal"
-    subnet_id                     = "/subscriptions/d11da572-d15e-42c4-a61c-9bd28afc17ce/resourceGroups/rg-nanaykuna-dev-tf-eastus-networking/providers/Microsoft.Network/virtualNetworks/apps/subnets/s-nanaykuna-dev-tf-eastus-gw-01"
+    name                          = "my-ip-configuration"
+    subnet_id                     = local.private
     private_ip_address_allocation = "Dynamic"
   }
 }
 
-resource "azurerm_linux_virtual_machine" "agents" {
-  name                = "agents-machine"
-  resource_group_name = local.group
-  location            = local.location
-  size                = "Standard_F2"
-  admin_username      = "adminuser"
-  network_interface_ids = [
-    azurerm_network_interface.agents.id,
-  ]
+resource "azurerm_virtual_machine" "robot" {
+  name                  = "my-virtual-machine"
+  location              = local.location
+  resource_group_name   = local.group
+  network_interface_ids = [azurerm_network_interface.robot.id]
+  vm_size               = "Standard_DS1_v2"
 
-  admin_ssh_key {
-    username   = "adminuser"
-    public_key = file("~/.ssh/id_rsa.pub")
-  }
-
-  os_disk {
-    caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
-  }
-
-  source_image_reference {
-    publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "20.04-LTS"
+  storage_image_reference {
+    publisher = "MicrosoftWindowsDesktop"
+    offer     = "Windows-10"
+    sku       = "20h2-evd"
     version   = "latest"
   }
 
-  tags = {
-    environment = local.environment
-    created_by  = "terraform"
+  storage_os_disk {
+    name              = "my-os-disk"
+    caching           = "ReadWrite"
+    create_option     = "FromImage"
+    managed_disk_type = "Standard_LRS"
+  }
+
+  os_profile {
+    computer_name  = "myvm"
+    admin_username = "adminuser"
+    admin_password = "Password1234!"
+  }
+
+  os_profile_windows_config {
+    enable_automatic_upgrades = true
   }
 }

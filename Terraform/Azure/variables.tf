@@ -12,10 +12,12 @@ variable "sa" { type = string }
 variable "psa" { type = string }
 
 # Resources.
-variable "vms" { type = string }
-variable "lan" { type = string }
 variable "dns" { type = string }
+variable "ivm" { type = string }
 variable "key" { type = string }
+variable "lan" { type = string }
+variable "pvm" { type = string }
+variable "vms" { type = string }
 variable "pdns" { type = string }
 variable "dns2" { type = string }
 variable "dns3" { type = string }
@@ -25,8 +27,9 @@ variable "network" { type = string }
 variable "private" { type = string }
 variable "internet" { type = string }
 variable "security" { type = string }
-variable "pfunction" { type = string }
 variable "ifunction" { type = string }
+variable "pfunction" { type = string }
+variable "aspnetcore" { type = string }
 variable "environment" { type = string }
 
 # Resources Groups.
@@ -58,11 +61,13 @@ locals {
 
   # Resources.
   db          = var.db
-  sql         = var.sql
-  lan         = var.lan
-  key         = var.key
-  vms         = var.vms
   dns         = var.dns
+  ivm         = var.ivm
+  key         = var.key
+  lan         = var.lan
+  pvm         = var.pvm
+  sql         = var.sql
+  vms         = var.vms
   pdns        = var.pdns
   dns2        = var.dns2
   dns3        = var.dns3
@@ -74,6 +79,7 @@ locals {
   internet    = var.internet
   ifunction   = var.ifunction
   pfunction   = var.pfunction
+  aspnetcore  = var.aspnetcore
   environment = var.environment
 
   # Azure Providers.
@@ -111,25 +117,6 @@ variable "app" {
       function = "back-office-functions"
     },
 
-    "ticket-manager" = {
-      node     = ""
-      net      = ""
-      function = "shipping-dates"
-    },
-
-
-    "products-functions" = {
-      node     = ""
-      net      = ""
-      function = "products-functions"
-    },
-
-    "bff-integration-infra" = {
-      node     = ""
-      net      = ""
-      function = "shipping-experience"
-    },
-
     "marketing" = {
       net      = ""
       node     = ""
@@ -142,16 +129,34 @@ variable "app" {
       function = "notification"
     },
 
-    "shipping-reports" = {
-      net      = ""
+    "ticket-manager" = {
       node     = ""
-      function = "shipping-reports"
+      net      = ""
+      function = "shipping-dates"
     },
 
     "customer-loyalty" = {
       net      = ""
       node     = ""
       function = "customer-loyalty"
+    },
+
+    "shipping-reports" = {
+      net      = ""
+      node     = ""
+      function = "shipping-reports"
+    },
+
+    "products-functions" = {
+      node     = ""
+      net      = ""
+      function = "products-functions"
+    },
+
+    "bff-integration-infra" = {
+      node     = ""
+      net      = ""
+      function = "shipping-experience"
     }
   }
 }

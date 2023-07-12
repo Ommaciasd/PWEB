@@ -16,13 +16,6 @@ resource "azurerm_virtual_network" "apps" {
 #-------------------------------------
 # SNETs Creation - Default is "true"
 #-------------------------------------
-resource "azurerm_subnet" "function" {
-  resource_group_name  = local.group
-  name                 = local.function
-  address_prefixes     = [local.private]
-  virtual_network_name = azurerm_virtual_network.apps.name
-}
-
 resource "azurerm_subnet" "web" {
   delegation {
     name = local.dweb
@@ -36,6 +29,20 @@ resource "azurerm_subnet" "web" {
   name                 = local.web
   resource_group_name  = local.group
   address_prefixes     = [local.public]
+  virtual_network_name = azurerm_virtual_network.apps.name
+}
+
+resource "azurerm_subnet" "pvm" {
+  resource_group_name  = local.group
+  name                 = local.ivm
+  address_prefixes     = [local.pvm]
+  virtual_network_name = azurerm_virtual_network.apps.name
+}
+
+resource "azurerm_subnet" "function" {
+  resource_group_name  = local.group
+  name                 = local.function
+  address_prefixes     = [local.private]
   virtual_network_name = azurerm_virtual_network.apps.name
 }
 

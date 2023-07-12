@@ -1,4 +1,5 @@
 # SUBNETS.
+variable "pvm"         { type = string }
 variable "public"      { type = string }
 variable "private"     { type = string }
 variable "pfunction"   { type = string }
@@ -13,6 +14,7 @@ variable "storage"     { type = string }
 variable "function"    { type = string }
 variable "connection"  { type = string }
 variable "environment" { type = string }
+variable "aspnetcore"  { type = string }
 
 locals {
   days        = 2
@@ -40,9 +42,9 @@ locals {
   storage     = var.storage
   created     = "terraform"
   assetname   = "nanaykuna"
-  aspnetcore  = "Development"
   recommended = "recommended"
   tz          = "America/Lima"
+  aspnetcore  = var.aspnetcore
   connection  = var.connection
   environment = var.environment
   rule        = "Block Access Public"
@@ -50,6 +52,7 @@ locals {
   subresource = "sites"       # PSC subresource names.
   manual      = "false"       # ENABLE PRIVATE LINK ENDPOINT.
   pfunction   = var.pfunction # ID PUBLIC SUBNET APP Functions.
+  pvm         = var.pvm       # ID PUBLIC SUBNET Virtual Machines.
   net         = format("lwa-%s-%s-tf-%s-%s", local.assetname, var.environment, local.location, var.net)
   node        = format("lwa-%s-%s-tf-%s-%s", local.assetname, var.environment, local.location, var.node)
   function    = format("lfa-%s-%s-tf-%s-%s", local.assetname, var.environment, local.location, var.function)

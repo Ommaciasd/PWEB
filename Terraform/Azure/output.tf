@@ -15,17 +15,3 @@ output "storage" {
 output "networking" {
   value = module.groups.networking
 }
-
-# Storage Accounts.
-/* output "sapps" {
-  value = module.storage.apps
-} */
-
-# Networking.
-output "napps" {
-  value = module.networking.apps
-}
-
-output "webs" {
-  value = module.networking.webs
-}

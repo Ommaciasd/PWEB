@@ -1,26 +1,10 @@
-/* module "vms" {
-  source      = ".//modules//vms"
-  environment = local.environment
-  group       = module.groups.vms
-  vms         = local.vms
-}*/
-
+# First deploy for infrastructure, Unit Logics and networking.
 module "sql" {
   db          = local.db
   sql         = local.sql
   source      = ".//modules//sql"
   environment = local.environment
   group       = module.groups.storage
-}
-
-
-module "storage" {
-  environment = local.environment
-  group       = module.groups.storage
-  source      = ".//modules//storage"
-  function    = module.networking.functions
-  public      = local.sa  # Add Resources Prefix + Name.
-  private     = local.psa # Add Resources Prefix + Name.
 }
 
 module "keys" {
@@ -74,9 +58,21 @@ module "networking" {
   source      = ".//modules//networking"
   apps        = local.apps      # Add Resources Prefix + Name.
   web         = local.internet  # Add Subnet Linux Web App Name.
+  ivm         = local.ivm       # Add Public Subnet Virtual Machines.
+  pvm         = local.pvm       # Add Public Subnet Virtual Machines.
   function    = local.lan       # Add Subnet Linux Function App Name.
   ifunction   = local.ifunction # Add Public Linux Function App Name.
   pfunction   = local.pfunction # Add Subnet Public Linux Function App Name.
+}
+
+# Second deploy for Compute, Apps, Objects.
+module "storage" {
+  environment = local.environment
+  group       = module.groups.storage
+  source      = ".//modules//storage"
+  function    = module.networking.functions
+  public      = local.sa  # Add Resources Prefix + Name.
+  private     = local.psa # Add Resources Prefix + Name.
 }
 
 module "apps" {
@@ -84,6 +80,7 @@ module "apps" {
   net         = each.value.net
   node        = each.value.node
   plan        = module.plan.web
+  aspnetcore  = local.aspnetcore
   environment = local.environment
   group       = module.groups.apps
   source      = ".//modules//apps"
@@ -95,4 +92,13 @@ module "apps" {
   connection  = module.monitoring.connection
   public      = module.networking.webs      # ID PUBLIC SUBNET.
   pfunction   = module.networking.pfunction # ID PUBLIC SUBNET APP Functions.
+  pvm         = module.networking.pvm       # ID PUBLIC SUBNET Virtual Machines.
+}
+
+module "vms" {
+  vms         = local.vms
+  group       = module.groups.vms
+  source      = ".//modules//vms"
+  environment = local.environment
+  private     = module.networking.functions
 }
