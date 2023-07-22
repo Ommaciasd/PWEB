@@ -10,7 +10,7 @@ resource "azurerm_network_interface" "robot" {
 }
 
 resource "azurerm_virtual_machine" "robot" {
-  name                  = "my-virtual-machine"
+  name                  = local.vm
   location              = local.location
   resource_group_name   = local.group
   network_interface_ids = [azurerm_network_interface.robot.id]

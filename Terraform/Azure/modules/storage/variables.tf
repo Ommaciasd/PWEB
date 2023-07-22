@@ -1,7 +1,6 @@
 variable "group"       { type = string }
-variable "public"      { type = string }
-variable "private"     { type = string }
-variable "function"    { type = string }
+variable "app"         { type = list(string) }
+variable "function"    { type = any }
 variable "environment" { type = string }
 
 locals {
@@ -14,6 +13,5 @@ locals {
   assetname   = "nanaykuna"
   function    = var.function
   environment = var.environment
-  public      = format("sa%s%stf%s", local.assetname, local.environment, var.public)
-  private     = format("sa%s%stf%s", local.assetname, local.environment, var.private)
+  name        = format("sa%s%stf", local.assetname, var.environment)
 }

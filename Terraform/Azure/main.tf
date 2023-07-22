@@ -1,4 +1,17 @@
 # First deploy for infrastructure, Unit Logics and networking.
+module "plan" {
+  app         = var.plan
+  environment = local.environment
+  group       = module.groups.apps
+  source      = ".//modules//plan"
+}
+
+module "groups" {
+  app         = var.group
+  environment = local.environment
+  source      = ".//modules//groups"
+}
+
 module "sql" {
   db          = local.db
   sql         = local.sql
@@ -7,19 +20,21 @@ module "sql" {
   group       = module.groups.storage
 }
 
+module "networking" {
+  apps        = local.apps
+  subnet      = var.subnet
+  gateway     = var.gateway
+  network     = local.network
+  environment = local.environment
+  group       = module.groups.networking
+  source      = ".//modules//networking"
+}
+
 module "keys" {
   environment = local.environment
   group       = module.groups.apps
   source      = ".//modules//keys"
   apps        = local.key # Add Resources Prefix + Name.
-}
-
-module "plan" {
-  environment = local.environment
-  source      = ".//modules//plan"
-  group       = module.groups.apps
-  web         = local.wa # Add Resources Prefix + Name.
-  function    = local.fa # Add Resources Prefix + Name.
 }
 
 module "monitoring" {
@@ -34,71 +49,63 @@ module "dns" {
   environment = local.environment
   group       = module.groups.networking
   private     = local.pdns # Add Resources Prefix + Name.
-  dns         = local.dns  # Add Resources Prefix + Name.
-  dns2        = local.dns2 # Add Resources Prefix + Name.
-  dns3        = local.dns3 # Add Resources Prefix + Name.
-  dns4        = local.dns4 # Add Resources Prefix + Name.
-}
-
-module "groups" {
-  vm          = local.vm
-  environment = local.environment
-  source      = ".//modules//groups"
-  apps        = local.apps       # Add Resources Prefix + Name.
-  storage     = local.storage    # Add Resources Prefix + Name.
-  networking  = local.networking # Add Resources Prefix + Name.
-}
-
-module "networking" {
-  public      = local.public
-  private     = local.private
-  network     = local.network
-  environment = local.environment
-  group       = module.groups.networking
-  source      = ".//modules//networking"
-  apps        = local.apps      # Add Resources Prefix + Name.
-  web         = local.internet  # Add Subnet Linux Web App Name.
-  ivm         = local.ivm       # Add Public Subnet Virtual Machines.
-  pvm         = local.pvm       # Add Public Subnet Virtual Machines.
-  function    = local.lan       # Add Subnet Linux Function App Name.
-  ifunction   = local.ifunction # Add Public Linux Function App Name.
-  pfunction   = local.pfunction # Add Subnet Public Linux Function App Name.
+  dns         = var.dns    # Add Resources Prefix + Name.
 }
 
 # Second deploy for Compute, Apps, Objects.
-module "storage" {
-  environment = local.environment
-  group       = module.groups.storage
-  source      = ".//modules//storage"
-  function    = module.networking.functions
-  public      = local.sa  # Add Resources Prefix + Name.
-  private     = local.psa # Add Resources Prefix + Name.
-}
+# module "vms" {
+#   vm          = local.vm
+#   group       = module.groups.vms
+#   source      = ".//modules//vms"
+#   environment = local.environment
+#   private     = module.networking.subnet[1].id
+# }
 
-module "apps" {
-  for_each    = var.app
-  net         = each.value.net
-  node        = each.value.node
-  plan        = module.plan.web
-  aspnetcore  = local.aspnetcore
-  environment = local.environment
-  group       = module.groups.apps
-  source      = ".//modules//apps"
-  function    = each.value.function
-  plan2       = module.plan.function
-  storage     = module.storage.public
-  key         = module.monitoring.key
-  private     = module.networking.functions
-  connection  = module.monitoring.connection
-  public      = module.networking.webs      # ID PUBLIC SUBNET.
-  pfunction   = module.networking.pfunction # ID PUBLIC SUBNET APP Functions.
-  pvm         = module.networking.pvm       # ID PUBLIC SUBNET Virtual Machines.
-}
+# module "storage" {
+#   app         = var.data
+#   environment = local.environment
+#   group       = module.groups.storage
+#   source      = ".//modules//storage"
+#   function    = module.networking.subnet[0].id
+# }
 
-module "vms" {
-  vms         = local.vms
-  group       = module.groups.vms
-  source      = ".//modules//vms"
-  environment = local.environment
-  private     = module.networking.functions
-}
+# module "dotnet" {
+#   app         = each.value
+#   for_each    = toset(var.net)
+#   plan        = module.plan.web
+#   aspnetcore  = local.aspnetcore
+#   environment = local.environment
+#   group       = module.groups.apps
+#   source      = ".//modules//dotnet"
+#   key         = module.monitoring.key
+#   connection  = module.monitoring.connection
+#   public      = module.networking.gateway[0].id # ID PUBLIC SUBNET APP Webs.
+# }
+
+# module "node" {
+#   app         = each.value
+#   for_each    = toset(var.node)
+#   plan        = module.plan.web
+#   aspnetcore  = local.aspnetcore
+#   environment = local.environment
+#   group       = module.groups.apps
+#   source      = ".//modules//node"
+#   key         = module.monitoring.key
+#   connection  = module.monitoring.connection
+#   public      = module.networking.gateway[0].id # ID PUBLIC SUBNET APP Webs.
+# }
+
+# module "functions" {
+#   app         = each.value
+#   aspnetcore  = local.aspnetcore
+#   environment = local.environment
+#   group       = module.groups.apps
+#   for_each    = toset(var.function)
+#   plan        = module.plan.function
+#   key         = module.monitoring.key
+#   storage     = module.storage.public
+#   source      = ".//modules//functions"
+#   private     = module.networking.subnet[0].id
+#   connection  = module.monitoring.connection
+#   pfunction   = module.networking.gateway[1].id # ID PUBLIC SUBNET APP Functions.
+# }

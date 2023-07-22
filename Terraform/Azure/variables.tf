@@ -1,42 +1,16 @@
 # Nanaykuna
-#Apps.
-variable "wa" { type = string }
-variable "fa" { type = string }
-
 # SQL.
 variable "db" { type = string }
 variable "sql" { type = string }
 
-#Storage Accounts.
-variable "sa" { type = string }
-variable "psa" { type = string }
-
 # Resources.
-variable "dns" { type = string }
-variable "ivm" { type = string }
+variable "vm" { type = string }
 variable "key" { type = string }
-variable "lan" { type = string }
-variable "pvm" { type = string }
-variable "vms" { type = string }
+variable "apps" { type = string }
 variable "pdns" { type = string }
-variable "dns2" { type = string }
-variable "dns3" { type = string }
-variable "dns4" { type = string }
-variable "public" { type = string }
-variable "network" { type = string }
-variable "private" { type = string }
-variable "internet" { type = string }
 variable "security" { type = string }
-variable "ifunction" { type = string }
-variable "pfunction" { type = string }
 variable "aspnetcore" { type = string }
 variable "environment" { type = string }
-
-# Resources Groups.
-variable "vm" { type = string }
-variable "apps" { type = string }
-variable "storage" { type = string }
-variable "networking" { type = string }
 
 # Azure Providers.
 variable "destroy" {}
@@ -45,40 +19,16 @@ variable "tenant" { type = string }
 variable "subscription" { type = string }
 
 locals {
-  # Apps.
-  wa = var.wa
-  fa = var.fa
-
-  # Storage Accounts.
-  sa  = var.sa
-  psa = var.psa
-
-  # Resources Groups.
-  vm         = var.vm
-  apps       = var.apps
-  storage    = var.storage
-  networking = var.networking
-
   # Resources.
   db          = var.db
+  vm          = var.vm
   dns         = var.dns
-  ivm         = var.ivm
   key         = var.key
-  lan         = var.lan
-  pvm         = var.pvm
   sql         = var.sql
-  vms         = var.vms
+  apps        = var.apps
   pdns        = var.pdns
-  dns2        = var.dns2
-  dns3        = var.dns3
-  dns4        = var.dns4
-  public      = var.public
-  network     = var.network
-  private     = var.private
   security    = var.security
-  internet    = var.internet
-  ifunction   = var.ifunction
-  pfunction   = var.pfunction
+  network     = var.network
   aspnetcore  = var.aspnetcore
   environment = var.environment
 
@@ -89,74 +39,104 @@ locals {
   subscription = var.subscription
 }
 
-# Validar uso de condicionales para deployar estos recursos en terraform. 20230602.
-variable "app" {
-  type = map(object({
-    net      = string
-    node     = string
-    function = string
+variable "data" {
+  type    = list(string)
+  default = ["public", "private"]
+}
+
+variable "plan" {
+  type    = list(string)
+  default = ["webs", "functions"]
+}
+
+variable "group" {
+  type    = list(string)
+  default = ["vms", "apps", "storage", "networking"]
+}
+
+variable "node" {
+  type    = list(string)
+  default = ["ticket-manager", "nanaykuna", "storybook"]
+}
+
+variable "net" {
+  type    = list(string)
+  default = ["backoffice-api", "bff-integration-infra", "backoffice"]
+}
+
+variable "function" {
+  type = list(string)
+  default = ["marketing", "payments", "notification", "shipping-reports", "shipping-dates", "customer-loyalty",
+  "invoices-functions", "products-functions", "shipping-experience", "back-office-functions"]
+}
+
+# DNS
+variable "dns" {
+  type = list(object({
+    name      = string
+    host_name = string
   }))
+  default = [
 
-  default = {
-    "payments" = {
-      function = "payments"
-      node     = "storybook"
-      net      = "backoffice-api"
+    {
+      name      = "progresolmas.pe"
+      host_name = "ns1-35.azure-dns.com"
     },
 
-    "nanaykuna" = {
-      node     = "nanaykuna"
-      function = "invoices-functions"
-      net      = "bff-integration-infra"
+    {
+      name      = "progresolplus.pe"
+      host_name = "ns1-34.azure-dns.com"
     },
 
-    # BackOffice
-    "backoffice" = {
-      net      = "backoffice"
-      node     = "ticket-manager"
-      function = "back-office-functions"
+    {
+      name      = "progresolmas.com"
+      host_name = "ns1-33.azure-dns.com"
     },
 
-    "marketing" = {
-      net      = ""
-      node     = ""
-      function = "marketing"
-    },
-
-    "notification" = {
-      net      = ""
-      node     = ""
-      function = "notification"
-    },
-
-    "ticket-manager" = {
-      node     = ""
-      net      = ""
-      function = "shipping-dates"
-    },
-
-    "customer-loyalty" = {
-      net      = ""
-      node     = ""
-      function = "customer-loyalty"
-    },
-
-    "shipping-reports" = {
-      net      = ""
-      node     = ""
-      function = "shipping-reports"
-    },
-
-    "products-functions" = {
-      node     = ""
-      net      = ""
-      function = "products-functions"
-    },
-
-    "bff-integration-infra" = {
-      node     = ""
-      net      = ""
-      function = "shipping-experience"
+    {
+      name      = "progresolplus.com"
+      host_name = "ns1-37.azure-dns.com"
     }
-  }
+  ]
+}
+
+# Networking
+variable "network" { type = string }
+
+variable "gateway" {
+  type = list(object({
+    name            = string
+    address_prefix  = string
+  }))
+  default = [
+
+    {
+      name           = "gw-01"
+      address_prefix = "10.10.0.0/24"
+    },
+
+    {
+      name            = "functions"
+      address_prefix  = "10.10.2.0/24"
+    }
+  ]
+}
+
+variable "subnet" {
+  type = list(object({
+    name           = string
+    address_prefix = string
+  }))
+  default = [
+
+    {
+      name           = "snet-01"
+      address_prefix = "10.10.1.0/24"
+    },
+
+    {
+      name           = "vms"
+      address_prefix = "10.10.3.0/24"
+    }
+  ]
 }

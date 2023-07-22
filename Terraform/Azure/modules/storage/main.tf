@@ -1,6 +1,6 @@
 # Create Storage Account
 # Apps.
-  resource "azurerm_storage_account" "public" {
+  resource "azurerm_storage_account" "apps" {
   tags                     = {
     created_by  = local.created
     environment = local.environment
@@ -10,21 +10,8 @@
   account_replication_type = local.type
   account_tier             = local.tier
   resource_group_name      = local.group
-  name                     = local.public
-  location                 = local.location
- }
-
-  resource "azurerm_storage_account" "private" {
-  tags                     = {
-    created_by  = local.created
-    environment = local.environment
-  }
-
-  min_tls_version          = local.tls
-  account_replication_type = local.type
-  account_tier             = local.tier
-  resource_group_name      = local.group
-  name                     = local.private
+  count                    = length(var.app)
+  name                     = "${local.name}${var.app[count.index]}"
   location                 = local.location
  }
 

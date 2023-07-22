@@ -1,5 +1,5 @@
-variable "vms"         { type = string }
-variable "private"     { type = string }
+variable "vm"          { type = string }
+variable "private"     { type = any }
 variable "group"       { type = string }
 variable "environment" { type = string }
 
@@ -9,5 +9,5 @@ locals {
   assetname   = "nanaykuna"
   private     = var.private
   environment = var.environment
-  vms         = format("vm-%s-%s-tf-%s-%s", local.assetname, var.environment, local.location, var.vms)
+  vm          = format("vm-%s-%s-tf-%s-%s", local.assetname, var.environment, local.location, var.vm)
 }

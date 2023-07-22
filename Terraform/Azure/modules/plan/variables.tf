@@ -1,7 +1,6 @@
-variable "web"         { type = string }
 variable "group"       { type = string }
-variable "function"    { type = string }
 variable "environment" { type = string }
+variable "app"         { type = list(string) }
 
 locals {
   location    = "eastus"
@@ -11,7 +10,5 @@ locals {
   environment = var.environment
   sku         = "B1"    # Service plan's sku.
   os          = "Linux" # Service plan's os_type.
-  web         = format("sp-%s-%s-tf-%s-%s", local.assetname, var.environment, local.location, var.web)
-  function    = format("sp-%s-%s-tf-%s-%s", local.assetname, var.environment, local.location, var.function)
+  name        = format("sp-%s-%s-tf-%s", local.assetname, var.environment, local.location)
 }
-

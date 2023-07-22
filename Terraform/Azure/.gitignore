@@ -2,8 +2,7 @@
 **/.terraform/*
 
 # .tfstate files
-*.tfstate
-*.tfstate.*
+*.tfstate*
 
 # Crash log files
 crash.log
@@ -16,4 +15,4 @@ crash.*.log
 *.tfplan
 
 # terraform lock file
-*.hcl
+*form.hcl

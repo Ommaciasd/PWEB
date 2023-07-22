@@ -1,8 +1,8 @@
 # Outputs
 output "public" {
-  value = azurerm_storage_account.public.name
+  value = azurerm_storage_account.apps[0].name
 }
 
 output "private" {
-  value = azurerm_storage_account.private.name
+  value = azurerm_storage_account.apps[1].name
 }
