@@ -3,33 +3,18 @@
 db  = "db"
 sql = "sql"
 
-# Apps.
-wa = "webs"
-fa = "functions"
-endpoint = "functions"
-
-# Networking
-network = "10.30.0.0/16"
-public  = "10.30.0.0/24"
-private = "10.30.1.0/24"
-
-# Insights.
-insights  = "app-insights"
-
-# DNS
-dns3 = "progresolmas.pe"
-dns  = "progresolplus.pe"
-dns2 = "progresolmas.com"
-dns4 = "progresolplus.com"
-pdns = "nanaykuna.azurewebsites.net"
+network   = "10.10.0.0/16" # Networking
 
 # Resources.
-environment = "prd"
-vnet        = "vnet"
-internet    = "gw-01"
-lan         = "snet-01"
+environment = "prod"
+apps        = "apps"
+vm          = "pipeline"
+aspnetcore  = "Development"
 key         = "ticketmanager"
 security    = "vm-bastionwin01-nsg"
+
+# DNS
+pdns = "nanaykuna.azurewebsites.net"
 
 # Azure Provider.
 destroy      = true
