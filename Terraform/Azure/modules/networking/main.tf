@@ -22,6 +22,10 @@ resource "azurerm_subnet" "subnet" {
   address_prefixes     = [each.value.address_prefix]
   virtual_network_name = azurerm_virtual_network.apps.name
   name                 = "${local.name}-${tostring(each.value.name)}"
+
+  lifecycle {
+    prevent_destroy = false
+  }
 }
 
 resource "azurerm_subnet" "gateway" {
@@ -39,4 +43,8 @@ resource "azurerm_subnet" "gateway" {
   address_prefixes     = [each.value.address_prefix]
   virtual_network_name = azurerm_virtual_network.apps.name
   name                 = "${local.name}-${tostring(each.value.name)}"
+
+  lifecycle {
+    prevent_destroy = false
+  }
 }

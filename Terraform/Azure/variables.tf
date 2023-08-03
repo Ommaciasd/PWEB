@@ -8,6 +8,8 @@ variable "vm" { type = string }
 variable "key" { type = string }
 variable "apps" { type = string }
 variable "pdns" { type = string }
+variable "lvmss" { type = string }
+variable "network" { type = string }
 variable "security" { type = string }
 variable "aspnetcore" { type = string }
 variable "environment" { type = string }
@@ -22,6 +24,7 @@ locals {
   # Resources.
   db          = var.db
   vm          = var.vm
+  lvmss       = var.lvmss
   dns         = var.dns
   key         = var.key
   sql         = var.sql
@@ -39,36 +42,6 @@ locals {
   subscription = var.subscription
 }
 
-variable "data" {
-  type    = list(string)
-  default = ["public", "private"]
-}
-
-variable "plan" {
-  type    = list(string)
-  default = ["webs", "functions"]
-}
-
-variable "group" {
-  type    = list(string)
-  default = ["vms", "apps", "storage", "networking"]
-}
-
-variable "node" {
-  type    = list(string)
-  default = ["ticket-manager", "nanaykuna", "storybook"]
-}
-
-variable "net" {
-  type    = list(string)
-  default = ["backoffice-api", "bff-integration-infra", "backoffice"]
-}
-
-variable "function" {
-  type = list(string)
-  default = ["marketing", "payments", "notification", "shipping-reports", "shipping-dates", "customer-loyalty",
-  "invoices-functions", "products-functions", "shipping-experience", "back-office-functions"]
-}
 
 # DNS
 variable "dns" {
@@ -101,12 +74,10 @@ variable "dns" {
 }
 
 # Networking
-variable "network" { type = string }
-
 variable "gateway" {
   type = list(object({
-    name            = string
-    address_prefix  = string
+    name           = string
+    address_prefix = string
   }))
   default = [
 
@@ -116,8 +87,8 @@ variable "gateway" {
     },
 
     {
-      name            = "functions"
-      address_prefix  = "10.10.2.0/24"
+      name           = "functions"
+      address_prefix = "10.10.2.0/24"
     }
   ]
 }
@@ -139,4 +110,35 @@ variable "subnet" {
       address_prefix = "10.10.3.0/24"
     }
   ]
+}
+
+variable "plan" {
+  type    = list(string)
+  default = ["webs", "functions"]
+}
+
+variable "data" {
+  type    = list(string)
+  default = ["public", "private", "nanaykuna"]
+}
+
+variable "group" {
+  type    = list(string)
+  default = ["vms", "apps", "storage", "networking"]
+}
+
+variable "node" {
+  type    = list(string)
+  default = ["ticket-manager", "nanaykuna", "storybook"]
+}
+
+variable "net" {
+  type    = list(string)
+  default = ["backoffice-api", "bff-integration-infra", "backoffice"]
+}
+
+variable "function" {
+  type = list(string)
+  default = ["marketing", "payments", "notification", "shipping-reports", "shipping-dates", "customer-loyalty",
+  "invoices-functions", "products-functions", "shipping-experience", "back-office-functions"]
 }

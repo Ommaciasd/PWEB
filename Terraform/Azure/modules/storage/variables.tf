@@ -13,5 +13,5 @@ locals {
   assetname   = "nanaykuna"
   function    = var.function
   environment = var.environment
-  name        = format("sa%s%stf", local.assetname, var.environment)
+  name        = format("sa%s%s", local.assetname, var.environment)
 }

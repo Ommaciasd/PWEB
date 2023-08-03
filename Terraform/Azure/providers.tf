@@ -3,7 +3,17 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "3.53.0"
+      version = "3.66.0"
+    }
+
+    random = {
+      source  = "hashicorp/random"
+      version = "3.1.0" # Puedes ajustar la versión según tus necesidades
+    }
+
+    azuredevops = {
+      source  = "microsoft/azuredevops"
+      version = "0.7.0"
     }
   }
 }
@@ -23,4 +33,8 @@ provider "azurerm" {
       prevent_deletion_if_contains_resources = local.resources
     }
   }
+}
+
+provider "azuredevops" {
+  # Configuration options
 }

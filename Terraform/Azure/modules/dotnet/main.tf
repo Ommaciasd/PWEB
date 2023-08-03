@@ -29,7 +29,6 @@ resource "azurerm_linux_web_app" "net" {
 app_settings = {
     "TZ"                                              = local.tz
     "APPINSIGHTS_INSTRUMENTATIONKEY"                  = local.key
-    "WEBSITE_HTTPLOGGING_RETENTION_DAYS"              = local.days
     "APPINSIGHTS_PORTALINFO"                          = local.portal
     "SnapshotDebugger_EXTENSION_VERSION"              = local.feature
     "APPINSIGHTS_PROFILERFEATURE_VERSION"             = local.feature
