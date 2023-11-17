@@ -49,22 +49,22 @@ variable "dns" {
   default = [
 
     {
-      name      = "progresolmas.pe"
+      name      = "$DOMAIN_WEB.$ROOT"
       host_name = "ns1-35.azure-dns.com"
     },
 
     {
-      name      = "progresolplus.pe"
+      name      = "$DOMAIN_WEB_2.$ROOT"
       host_name = "ns1-34.azure-dns.com"
     },
 
     {
-      name      = "progresolmas.com"
+      name      = "$DOMAIN_WEB_2.com"
       host_name = "ns1-33.azure-dns.com"
     },
 
     {
-      name      = "progresolplus.com"
+      name      = "$DOMAIN_WEB_3.com"
       host_name = "ns1-37.azure-dns.com"
     }
   ]
@@ -107,7 +107,7 @@ variable "subscription" { type = string }
 
 variable "data" {
   type    = list(string)
-  default = ["nanaykuna", "public", "private"]
+  default = ["$ORGANIZATION", "public", "private"]
 }
 
 variable "group" {
@@ -117,7 +117,7 @@ variable "group" {
 
 variable "node" {
   type = list(string)
-  default = ["nanaykuna", "ticket-manager", "storybook-nanaykuna"
+  default = ["$ORGANIZATION", "ticket-manager", "storybook-$ORGANIZATION"
   ]
 }
 
