@@ -1,27 +1,9 @@
-# Nanaykuna
-# SQL.
-variable "db" { type = string }
-variable "sql" { type = string }
-
-# Resources.
-variable "vm" { type = string }
-variable "key" { type = string }
-variable "apps" { type = string }
-variable "pdns" { type = string }
-variable "lvmss" { type = string }
-variable "network" { type = string }
-variable "security" { type = string }
-variable "aspnetcore" { type = string }
-variable "environment" { type = string }
-
-# Azure Providers.
-variable "destroy" {}
-variable "resources" {}
-variable "tenant" { type = string }
-variable "subscription" { type = string }
+variable "plan" {
+  type    = list(string)
+  default = ["webs", "functions"]
+}
 
 locals {
-  # Resources.
   db          = var.db
   vm          = var.vm
   lvmss       = var.lvmss
@@ -30,20 +12,35 @@ locals {
   sql         = var.sql
   apps        = var.apps
   pdns        = var.pdns
-  security    = var.security
-  network     = var.network
-  aspnetcore  = var.aspnetcore
-  environment = var.environment
-
-  # Azure Providers.
   tenant       = var.tenant
   destroy      = var.destroy
+  security     = var.security
+  network      = var.network
   resources    = var.resources
+  aspnetcore   = var.aspnetcore
+  environment  = var.environment
   subscription = var.subscription
 }
 
+variable "gateway" {
+  type = list(object({
+    name           = string
+    address_prefix = string
+  }))
+  default = [
 
-# DNS
+    {
+      name           = "gw-01"
+      address_prefix = "10.10.0.0/24"
+    },
+
+    {
+      name           = "functions"
+      address_prefix = "10.10.2.0/24"
+    }
+  ]
+}
+
 variable "dns" {
   type = list(object({
     name      = string
@@ -73,26 +70,6 @@ variable "dns" {
   ]
 }
 
-# Networking
-variable "gateway" {
-  type = list(object({
-    name           = string
-    address_prefix = string
-  }))
-  default = [
-
-    {
-      name           = "gw-01"
-      address_prefix = "10.10.0.0/24"
-    },
-
-    {
-      name           = "functions"
-      address_prefix = "10.10.2.0/24"
-    }
-  ]
-}
-
 variable "subnet" {
   type = list(object({
     name           = string
@@ -112,14 +89,25 @@ variable "subnet" {
   ]
 }
 
-variable "plan" {
-  type    = list(string)
-  default = ["webs", "functions"]
-}
+variable "destroy" {}
+variable "resources" {}
+variable "db" { type = string }
+variable "vm" { type = string }
+variable "key" { type = string }
+variable "sql" { type = string }
+variable "apps" { type = string }
+variable "pdns" { type = string }
+variable "lvmss" { type = string }
+variable "tenant" { type = string }
+variable "network" { type = string }
+variable "security" { type = string }
+variable "aspnetcore" { type = string }
+variable "environment" { type = string }
+variable "subscription" { type = string }
 
 variable "data" {
   type    = list(string)
-  default = ["public", "private", "nanaykuna"]
+  default = ["nanaykuna", "public", "private"]
 }
 
 variable "group" {
@@ -128,17 +116,19 @@ variable "group" {
 }
 
 variable "node" {
-  type    = list(string)
-  default = ["ticket-manager", "nanaykuna", "storybook"]
+  type = list(string)
+  default = ["nanaykuna", "ticket-manager", "storybook-nanaykuna"
+  ]
 }
 
 variable "net" {
   type    = list(string)
-  default = ["backoffice-api", "bff-integration-infra", "backoffice"]
+  default = ["backoffice", "backoffice-api", "bff-integration-infra"]
 }
 
 variable "function" {
   type = list(string)
-  default = ["marketing", "payments", "notification", "shipping-reports", "shipping-dates", "customer-loyalty",
-  "invoices-functions", "products-functions", "shipping-experience", "back-office-functions"]
+  default = ["marketing", "payments", "notification", "shipping-reports",
+  "shipping-dates", "customer-loyalty", "invoices-functions", "products-functions",
+  "shipping-experience", "back-office-functions"]
 }
