@@ -8,7 +8,7 @@
 ## Requirements
 
 - Have a Azure subscription.
-- Have a local computer for the compilation of TF, JSON manifests (Terraform, Azure CLI)
+- Have a local computer for the compilation of TF, JSON manifests (Terraform, Terragrunt, Azure CLI)
 - Create or clone a project with repositories and modules, using a base structure to standardize.
 
 ## Walkthrougth
@@ -75,7 +75,7 @@ variable "app" {
   }))
 
   default = {
-    "nanaykuna" = {
+    "$ORGANIZATION" = {
       node     = ""
       net      = ""
       function = ""
@@ -128,77 +128,71 @@ module "sql" {
   group       = module.groups.storage
 }
 
-
 module "storage" {
   environment = local.environment
   group       = module.groups.storage
   source      = ".//modules//storage"
   function    = module.networking.functions
-  public      = local.sa  # Add Resources Prefix + Name.
-  private     = local.psa # Add Resources Prefix + Name.
+  public      = local.sa  
+  private     = local.psa 
 }
 
 module "keys" {
   environment = local.environment
   group       = module.groups.apps
   source      = ".//modules//keys"
-  apps        = local.key # Add Resources Prefix + Name.
+  apps        = local.key 
 }
 
 module "plan" {
   environment = local.environment
   source      = ".//modules//plan"
   group       = module.groups.apps
-  web         = local.wa # Add Resources Prefix + Name.
-  function    = local.fa # Add Resources Prefix + Name.
+  web         = local.wa 
+  function    = local.fa 
 }
 
 module "monitoring" {
   environment = local.environment
   group       = module.groups.apps
   source      = ".//modules//monitoring"
-  apps        = local.apps # Add Resources Prefix + Name.
+  apps        = local.apps 
 }
 
 module "dns" {
   source      = ".//modules//dns"
   environment = local.environment
   group       = module.groups.networking
-  private     = local.pdns # Add Resources Prefix + Name.
-  dns         = local.dns  # Add Resources Prefix + Name.
-  dns2        = local.dns2 # Add Resources Prefix + Name.
-  dns3        = local.dns3 # Add Resources Prefix + Name.
-  dns4        = local.dns4 # Add Resources Prefix + Name.
+  private     = local.pdns
+  dns         = local.dns 
+  dns2        = local.dns2
+  dns3        = local.dns3
+  dns4        = local.dns4
 }
 
 module "groups" {
   vm          = local.vm
   environment = local.environment
   source      = ".//modules//groups"
-  apps        = local.apps       # Add Resources Prefix + Name.
-  storage     = local.storage    # Add Resources Prefix + Name.
-  networking  = local.networking # Add Resources Prefix + Name.
+  apps        = local.apps      
+  storage     = local.storage   
+  networking  = local.networking
 }
 
 module "networking" {
+  function    = local.lan 
+  apps        = local.apps  
   public      = local.public
   private     = local.private
   network     = local.network
+  web         = local.internet
+  ifunction   = local.ifunction
+  pfunction   = local.pfunction
   environment = local.environment
   group       = module.groups.networking
   source      = ".//modules//networking"
-  apps        = local.apps      # Add Resources Prefix + Name.
-  web         = local.internet  # Add Subnet Linux Web App Name.
-  function    = local.lan       # Add Subnet Linux Function App Name.
-  ifunction   = local.ifunction # Add Public Linux Function App Name.
-  pfunction   = local.pfunction # Add Subnet Public Linux Function App Name.
 }
 
-~~~
-
-- Second deploy for every App and Compute. &hios for active VNet, after Networking Builded and deployed in the tenenat over suscription!
-
-~~~ go
 module "apps" {
   for_each    = var.app
   net         = each.value.net
@@ -211,22 +205,27 @@ module "apps" {
   plan2       = module.plan.function
   storage     = module.storage.public
   key         = module.monitoring.key
+  public      = module.networking.webs
+  pfunction   = module.networking.pfunction
   private     = module.networking.functions
   connection  = module.monitoring.connection
-  public      = module.networking.webs      # ID PUBLIC SUBNET.
-  pfunction   = module.networking.pfunction # ID PUBLIC SUBNET APP Functions.
 }
-
 ~~~
 
+- Second deploy for every App and Compute. for active VNet, after Networking Builded and deployed in the tenant over suscription!
+
 ### Build
+
+- Delete the **$environment.tfvars** file, and **.terraform** folder, if you can view in a local repository on tne root, before deploy the commands terraform.
+
+- Add $PATH Terragrunt.exe
 
 - Use the followings sentences for building the changes.
 
 #### Terraform Commands
 
 ~~~ bash
-.\terragrunt.exe init --update
+terragrunt init -update
 ~~~
 
 - **terraform:** API.
@@ -234,13 +233,13 @@ module "apps" {
 - **--update:** update the terraform version, and providers.
 
 ~~~ bash
-.\terragrunt.exe get
+terragrunt get -update
 ~~~
 
 - **get:** sincronice all terraform modules.
 
 ~~~ bash
-.\terragrunt.exe fmt
+terragrunt fmt
 ~~~
 
 - **fmt:** formating the sangria of every fileconfig tf of the Terraform Root module.
@@ -252,18 +251,18 @@ module "apps" {
 ## Terraform_Commands
 
 ~~~ go
-.\terragrunt.exe validate
+terragrunt validate
 ~~~
 
 - **validate:** validate the semantic and sintaxis of the code.
 
 ~~~ go
-.\terragrunt.exe plan "-var-file=.\Vars\ENVIRONMENT.tfvars"
+terragrunt plan "-var-file=.\Vars\$ENVIRONMENT.tfvars"
 ~~~
 
 - **plan:** validate the changes in the terraform plan to build.
 - **-var-file:** output to a customized file-
-- **".\Vars\ENVIRONMENT.tfvars":** Path of file.tfvars to save the terraform plan, for apply the deploy of changes.
+- **".\Vars\$ENVIRONMENT.tfvars":** Path of file.tfvars to save the terraform plan, for apply the deploy of changes.
 
 ~~~ go
 terraform output
@@ -284,7 +283,7 @@ terraform console
 ## Commands
 
 ~~~ go
-.\terragrunt.exe apply -auto-approve "-var-file=.\Vars\ENVIRONMENT.tfvars"
+terragrunt apply -auto-approve "-var-file=.\Vars\$ENVIRONMENT.tfvars"
 ~~~
 
 - **apply:** aplicate the changes.
@@ -297,3 +296,14 @@ terraform show state
 - **show:** show contente in the screen.
 - **state:** statefile of the current plan saved by terraform.
 **
+
+## Destroy
+
+- Use the followings sentences for deploying the changes.
+
+~~~ go
+terragrunt destroy -auto-approve "-var-file=.\Vars\$ENVIRONMENT.tfvars"
+~~~
+
+- **destroy:** secure destroy all the infrastructure.
+- **-auto-approve:** auto approve the changes of the plan.
