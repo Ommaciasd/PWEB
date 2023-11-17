@@ -51,7 +51,7 @@ Initial release
 
 ![Alt text](items-2.png)
 
-### Date: 16/11/2023
+### Date: 17/11/2023
 
 - Change: Exclude dns module as a feature of deploy only in prod's environment. Because in the others it's not required to include in the script or manifest tf config.
 
