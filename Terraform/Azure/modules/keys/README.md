@@ -1,20 +1,31 @@
-# Changelog
+# Terraform: Azure: Update scripts for Key Vaults
 
-## Version [1.0.0]
+## Troubleshooting
 
-Initial release
+- Failed login.
 
-### Date: 04/07/2023
+~~~ bash
+az keyvault show --name $KEYVAULT_NAME --resource-group $RESOURCE_GROUP_NAME --query "properties.accessPolicies"
+~~~
 
-- Integrate: Resource Group on Module for deploy.
-- Migrate  : True for the new instances with the script from this module.
-- Deploy   : Many instances for a list with the names of all the current Key Vaults Nanaykuna for every environment.
+## Stages
 
-### Date: 23/11/2023
+## Publish
 
-- Integrate: Azure Secrets on Keys Module for deploy.
-![Alt text][secrets]
+- Use the standard structure for publishing the changes
 
-- Deploy   : Secrets for a list with the names of all the current Key Vaults Nanaykuna for every environment.
+## terraform.tfvars
 
-[secrets]: secrets-kv.png
+~~~ go
+key = "$KEYVAULT_NAME"
+~~~
+
+### main.tf
+
+~~~ go
+module "keys" {
+  environment = local.environment
+  group       = module.groups.apps
+  source      = ".//modules//keys"
+  apps        = local.key
+}
