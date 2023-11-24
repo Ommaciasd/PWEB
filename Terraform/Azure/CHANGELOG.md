@@ -6,7 +6,7 @@ Initial release
 
 ### Date: 26/03/2023
 
-- Deploy: Many instances for a list with the names of all the current Azure Infrastructure Nanaykuna for every environment.
+- Deploy: Many instances for a list with the names of all the current Azure Infrastructure ORGANIZATION for every environment.
 - Integrate: Networking, Apps, Storage on Module for deploy.
 
 ### Date: 04/07/2023
@@ -19,7 +19,7 @@ Initial release
 ### Date: 07/07/2023
 
 - Integrate: Add Environment Variable "ASPNETCORE_ENVIRONMENT" for Application Settings in every Linux Web App with DotNet & Node.
-- Integrate: Random String on Module Apps in Nanaykuna for nexts deploys.
+- Integrate: Random String on Module Apps in ORGANIZATION for nexts deploys.
 ![Alt text](image-5.png)
 
 - Integrate: Add Environment Variable "API_KEY_SECRET" for Application Settings in every Linux Web App with DotNet & Node.
@@ -30,8 +30,6 @@ Initial release
 ### Date: 19/07/2023
 
 - Update: Add a new Azure architecture for future and new deploys, about in use with functions length, variables as a type of list of strings by loops in count, with a index interpolation with local variables for Output in Resource.
-![Alt text](image.png)
-
 ![Alt text](image-2.png)
 
 ![Alt text](image-3.png)
@@ -51,8 +49,14 @@ Initial release
 
 ![Alt text](items-2.png)
 
-### Date: 17/11/2023
+### Date: 16/11/2023
 
 - Change: Exclude dns module as a feature of deploy only in prod's environment. Because in the others it's not required to include in the script or manifest tf config.
 
-![image](https://github.com/OMaciasd/IaC/assets/79873527/a91ea814-06bd-4d89-b96d-85852d6beab5)
+![Alt text][dns]
+
+[dns]: ./src/img/png/dns_prod.png
+
+### Date: 23/11/2023
+
+- Update   : Refactoring schema for new version in Terraform, and azure rm provider de Hashicorp.
