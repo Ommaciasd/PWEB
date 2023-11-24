@@ -1,7 +1,5 @@
 p*
-*.exe
-*.tfv*
-*.tfp*
-./.*/*
-*form.hcl
-*tfstate*
+*e*
+./.*
+*.tf*
+*f*.h*
