@@ -27,7 +27,7 @@
 - Failed login.
 
 ~~~ bash
-Remove-Item -Path "$env:USERPROFILE\.azure\*" -Force
+Remove-Item -Path "$env:USERPROFILE\.azure\*" -Force #POWERSHELL.
 az logout
 az account clear
 az login --use-device-code
@@ -35,7 +35,7 @@ az account show
 az account list --output table
 az group list --query "[?name=='$RESOURCE_GROUP_NAME']"
 az keyvault show --name $KEYVAULT_NAME --resource-group $RESOURCE_GROUP_NAME --query "properties.accessPolicies"
-choco uninstall terraform --force && choco install terraform --force
+choco uninstall terraform --force && choco install terraform --force #POWERSHELL.
 terraform -v
 ~~~
 
