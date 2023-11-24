@@ -1,37 +1,31 @@
-data "azurerm_client_config" "apps" {}
+# Terraform: Azure: Update scripts for Key Vaults
 
-#---------------------------------------
-# KVaults Creation - Default is "true"
-#---------------------------------------
-resource "azurerm_key_vault" "keys-apps" {
-  tags = {
-    created_by  = local.created
-    environment = local.environment
-  }
+## Troubleshooting
 
-  access_policy {
-    key_permissions = [
-      "${local.permissions}",
-    ]
+- Failed login.
 
-    secret_permissions = [
-      "${local.permissions}",
-    ]
+~~~ bash
+az keyvault show --name $KEYVAULT_NAME --resource-group $RESOURCE_GROUP_NAME --query "properties.accessPolicies"
+~~~
 
-    storage_permissions = [
-      "${local.permissions}",
-    ]
+## Stages
 
-    tenant_id = data.azurerm_client_config.apps.tenant_id
-    object_id = data.azurerm_client_config.apps.object_id
-  }
+## Publish
 
-  sku_name                    = local.sku
-  name                        = local.apps
-  soft_delete_retention_days  = local.days
-  resource_group_name         = local.group
-  location                    = local.location
-  purge_protection_enabled    = local.protection
-  enabled_for_disk_encryption = local.encryption
-  tenant_id                   = data.azurerm_client_config.apps.tenant_id
+- Use the standard structure for publishing the changes
+
+## terraform.tfvars
+
+~~~ go
+key = "$KEYVAULT_NAME"
+~~~
+
+### main.tf
+
+~~~ go
+module "keys" {
+  environment = local.environment
+  group       = module.groups.apps
+  source      = ".//modules//keys"
+  apps        = local.key
 }
