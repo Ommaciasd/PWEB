@@ -8,9 +8,9 @@ resource "random_string" "api_key_secret" {
   override_special = local.override
 }
 
-#-------------------------------------
+# -------------------------------------
 # LWA Creation - Default is "true"
-#-------------------------------------
+# -------------------------------------
 resource "azurerm_linux_web_app" "react" {
   tags = {
     created_by  = local.created
@@ -26,7 +26,7 @@ resource "azurerm_linux_web_app" "react" {
     application_stack { node_version = local.vnode }
   }
 
-app_settings = {
+  app_settings = {
     "TZ"                                              = local.tz
     "APPINSIGHTS_INSTRUMENTATIONKEY"                  = local.key
     "APPINSIGHTS_PORTALINFO"                          = local.portal
@@ -43,6 +43,33 @@ app_settings = {
     "APPLICATIONINSIGHTS_CONNECTION_STRING"           = local.connection
     "API_KEY_SECRET"                                  = random_string.api_key_secret.result
   }
+}
+
+#-------------------------------------
+# Azure Static Web App
+#-------------------------------------
+resource "azurerm_static_site" "react" {
+  name                = "dev-nanaykuna-backoffice-ui"
+  location            = "eastus2"
+  resource_group_name = local.group
+  tags = {
+    created_by  = local.created
+    environment = local.environment
+  }
+
+  # app_settings = {
+  #   # Configuraciones específicas de la aplicación
+  #   WEBSITE_NODE_DEFAULT_VERSION = local.vnode
+  #   AzureStaticApps_Api_Location = "/api"
+  #   AzureStaticApps_AppArtifactLocation = "/wwwroot"
+  #   # Otras configuraciones según tus necesidades.
+  # }
+
+  # build {
+  #   publish_webapp  = true
+  #   skip_post_build = false
+  #   stack           = "node"
+  # }
 }
 
 # ASVNSC Integration - Default is "true"
