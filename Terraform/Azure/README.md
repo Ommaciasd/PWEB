@@ -8,8 +8,9 @@
 ## Requirements
 
 - Have a Azure subscription.
-- Have a local computer for the compilation of TF, JSON manifests (Terraform, Terragrunt, Azure CLI)
+- Have a local computer for the compilation of TF, JSON manifests (Terraform, Terragrunt, Azure CLI).
 - Create or clone a project with repositories and modules, using a base structure to standardize.
+- Create the tfvars file, and deploy for environment.
 
 ## Walkthrougth
 
@@ -21,6 +22,23 @@
 - Upload new changes.
 - Evaluate the lifecycle of each script in the workflow and deploy as a trigger, just like the inputs, outputs, loops, modules, and fileconfig.
 
+## Troubleshooting
+
+- Failed login.
+
+~~~ bash
+Remove-Item -Path "$env:USERPROFILE\.azure\*" -Force
+az logout
+az account clear
+az login --use-device-code
+az account show
+az account list --output table
+az group list --query "[?name=='$RESOURCE_GROUP_NAME']"
+az keyvault show --name $KEYVAULT_NAME --resource-group $RESOURCE_GROUP_NAME --query "properties.accessPolicies"
+choco uninstall terraform --force && choco install terraform --force
+terraform -v
+~~~
+
 ## Stages
 
 ## Publish
@@ -31,37 +49,71 @@
 
 ~~~ go
 terraform {
-  required_version = ">= 1.3.7"
+  required_version = ">= $LAST_VERSION"
 }
 ~~~
 
 ## providers.tf
 
 ~~~ go
-# Define Terraform provider
 terraform {
-
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "3.37.0"
+      version = "$LAST_VERSION"
+    }
+
+    azuredevops = {
+      source  = "microsoft/azuredevops"
+      version = "$LAST_VERSION_ADO"
+    }
+
+    random = {
+      source  = "hashicorp/random"
+      version = "$LAST_VERSION_RANDOM"
     }
   }
-
 }
 
 provider "azurerm" {
-  # Configure the Microsoft Azure Provider
-  subscription_id = local.subscription
-  tenant_id       = local.tenant # Suscripcion Nanaykuna.
+  subscription_id = var.subscription
+  tenant_id = var.tenant
+
+  features {
+    key_vault {
+      purge_soft_delete_on_destroy    = var.destroy
+      recover_soft_deleted_key_vaults = var.destroy
+    }
+
+    resource_group {
+      prevent_deletion_if_contains_resources = var.resources
+    }
+  }
+}
+
+provider "azuredevops" {
+  # Puedes agregar la configuración necesaria para el proveedor azuredevops aquí
 }
 ~~~
 
-## terraform.tfvars
+## $ENVIRONMENT.tfvars
 
 ~~~ go
-# Nanaykuna Enviroments.
-enviroment  = "dev", "sta", and "prod"
+destroy             = true
+resources           = false
+apps                = "apps"
+sql                 = "$SQL_NAME"
+tenant              = "$TENANT-ID"
+aspnetcore          = "Development"
+create_dns_resource = true only "prod"
+db                  = "$DATABASE_NAME"
+subscription        = "$SUSCRIPTION-ID"
+security            = "$SECURITY_GROUP_NAME"
+vm                  = "$VIRTUAL_MACHINE_NAME"
+enviroment          = "dev", "sta", or "prod"
+network             = "$VIRTUAL_NETWORK/$CIDR"
+pdns                = "$ORGANIZATION.$DNS_ROOT"
+lvmss               = "$VIRTUAL_MACHINE_SCALE_SET_NAME"
 ~~~
 
 ## variables.tf
@@ -75,7 +127,7 @@ variable "app" {
   }))
 
   default = {
-    "$ORGANIZATION" = {
+    "nanaykuna" = {
       node     = ""
       net      = ""
       function = ""
@@ -133,64 +185,64 @@ module "storage" {
   group       = module.groups.storage
   source      = ".//modules//storage"
   function    = module.networking.functions
-  public      = local.sa  
-  private     = local.psa 
+  public      = local.sa  # Add Resources Prefix + Name.
+  private     = local.psa # Add Resources Prefix + Name.
 }
 
 module "keys" {
   environment = local.environment
   group       = module.groups.apps
   source      = ".//modules//keys"
-  apps        = local.key 
+  apps        = local.key # Add Resources Prefix + Name.
 }
 
 module "plan" {
   environment = local.environment
   source      = ".//modules//plan"
   group       = module.groups.apps
-  web         = local.wa 
-  function    = local.fa 
+  web         = local.wa # Add Resources Prefix + Name.
+  function    = local.fa # Add Resources Prefix + Name.
 }
 
 module "monitoring" {
   environment = local.environment
   group       = module.groups.apps
   source      = ".//modules//monitoring"
-  apps        = local.apps 
+  apps        = local.apps # Add Resources Prefix + Name.
 }
 
 module "dns" {
   source      = ".//modules//dns"
   environment = local.environment
   group       = module.groups.networking
-  private     = local.pdns
-  dns         = local.dns 
-  dns2        = local.dns2
-  dns3        = local.dns3
-  dns4        = local.dns4
+  private     = local.pdns # Add Resources Prefix + Name.
+  dns         = local.dns  # Add Resources Prefix + Name.
+  dns2        = local.dns2 # Add Resources Prefix + Name.
+  dns3        = local.dns3 # Add Resources Prefix + Name.
+  dns4        = local.dns4 # Add Resources Prefix + Name.
 }
 
 module "groups" {
   vm          = local.vm
   environment = local.environment
   source      = ".//modules//groups"
-  apps        = local.apps      
-  storage     = local.storage   
-  networking  = local.networking
+  apps        = local.apps       # Add Resources Prefix + Name.
+  storage     = local.storage    # Add Resources Prefix + Name.
+  networking  = local.networking # Add Resources Prefix + Name.
 }
 
 module "networking" {
-  function    = local.lan 
-  apps        = local.apps  
   public      = local.public
   private     = local.private
   network     = local.network
-  web         = local.internet
-  ifunction   = local.ifunction
-  pfunction   = local.pfunction
   environment = local.environment
   group       = module.groups.networking
   source      = ".//modules//networking"
+  apps        = local.apps      # Add Resources Prefix + Name.
+  web         = local.internet  # Add Subnet Linux Web App Name.
+  function    = local.lan       # Add Subnet Linux Function App Name.
+  ifunction   = local.ifunction # Add Public Linux Function App Name.
+  pfunction   = local.pfunction # Add Subnet Public Linux Function App Name.
 }
 
 module "apps" {
@@ -205,10 +257,10 @@ module "apps" {
   plan2       = module.plan.function
   storage     = module.storage.public
   key         = module.monitoring.key
-  public      = module.networking.webs
-  pfunction   = module.networking.pfunction
   private     = module.networking.functions
   connection  = module.monitoring.connection
+  public      = module.networking.webs      # ID PUBLIC SUBNET.
+  pfunction   = module.networking.pfunction # ID PUBLIC SUBNET APP Functions.
 }
 ~~~
 
