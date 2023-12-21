@@ -1,6 +1,9 @@
 variable "apps"        { type = string }
 variable "group"       { type = string }
 variable "network"     { type = string }
+variable "created"     { type = string }
+variable "location"    { type = string }
+variable "assetname"   { type = string }
 variable "environment" { type = string }
 
 variable "subnet" {
@@ -18,15 +21,6 @@ variable "gateway" {
 }
 
 locals {
-  location    = "eastus"
-  delegation  = "delegation"
-  group       = var.group
-  network     = var.network
-  created     = "terraform"
-  assetname   = "nanaykuna"
-  environment = var.environment
-  microsoft   = "Microsoft.Web/serverFarms"
-  actions     = "Microsoft.Network/virtualNetworks/subnets/action"
-  name        = format("sn-%s-%s-tf-%s", local.assetname, var.environment, local.location)
-  apps        = format("vn-%s-%s-tf-%s-%s", local.assetname, var.environment, local.location, var.apps)
+  name        = format("sn-%s-%s-tf-%s", var.assetname, var.environment, var.location)
+  apps        = format("vn-%s-%s-tf-%s-%s", var.assetname, var.environment, var.location, var.apps)
 }
