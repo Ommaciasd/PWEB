@@ -1,88 +1,84 @@
-#-------------------------------------
-# Random Variable - Default is "true"
-#-------------------------------------
 resource "random_string" "api_key_secret" {
-  upper            = local.always
-  special          = local.always
-  length           = local.length
-  override_special = local.override
+  length           = var.length
+  upper            = var.active
+  special          = var.active
+  override_special = var.override_special
 }
 
-#-------------------------------------
-# LFA Creation - Default is "true"
-#-------------------------------------
 resource "azurerm_linux_function_app" "functions" {
   tags = {
-    created_by  = local.created
-    environment = local.environment
+    created_by  = var.created
+    environment = var.environment
   }
 
-  service_plan_id      = local.plan
-  resource_group_name  = local.group
-  storage_account_name = local.storage
-  name                 = local.function
-  location             = local.location
-# app_settings         = var.app_settings
-
-# auth_settings {
-#   token_refresh_extension_hours =
-# }
+  service_plan_id      = var.plan
+  resource_group_name  = var.group
+  storage_account_name = var.storage
+  location             = var.location
+  name                 = format ( "lfa-%s-%s-tf-%s-%s", var.assetname, var.environment, var.location, var.app )
   site_config {
-    always_on = local.always
+    always_on = var.active
 
-    # RULES DE ACCESS AND RESTRICTION ON AZURE FUNCTION APP.
     ip_restriction {
-      ip_address = local.ip
-      name       = local.rule
-      action     = local.action
-      priority   = local.priority
+      priority   = 1
+      action     = "Deny"
+      ip_address = "0.0.0.0/0"
+      name       = "Block Access Public"
     }
   }
 
   app_settings = {
-    "TZ"                                              = local.tz
-    "APPINSIGHTS_INSTRUMENTATIONKEY"                  = local.key
-    "WEBSITE_HTTPLOGGING_RETENTION_DAYS"              = local.days
-    "AzureWebJobsSecretStorageType"                   = local.file
-    "APPINSIGHTS_PORTALINFO"                          = local.portal
-    "WEBSITE_ENABLE_SYNC_UPDATE_SITE"                 = local.always
-    "WEBSITES_ENABLE_APP_SERVICE_STORAGE"             = local.always
-    "FUNCTIONS_WORKER_RUNTIME"                        = local.runtime
-    "SnapshotDebugger_EXTENSION_VERSION"              = local.feature
-    "APPINSIGHTS_PROFILERFEATURE_VERSION"             = local.feature
-    "APPINSIGHTS_SNAPSHOTFEATURE_VERSION"             = local.feature
-    "DiagnosticServices_EXTENSION_VERSION"            = local.feature
-    "XDT_MicrosoftApplicationInsights_Mode"           = local.feature
-    "InstrumentationEngine_EXTENSION_VERSION"         = local.feature
-    "XDT_MicrosoftApplicationInsights_PreemptSdk"     = local.feature
-    "XDT_MicrosoftApplicationInsights_BaseExtensions" = local.feature
-    "ApplicationInsightsAgent_EXTENSION_VERSION"      = local.extension
-    "FUNCTION_ENVIRONMENT"                            = local.aspnetcore
-    "FUNCTIONS_EXTENSION_VERSION"                     = local.efunctions
-    "APPLICATIONINSIGHTS_CONNECTION_STRING"           = local.connection
+    "WEBSITE_RUN_FROM_PACKAGE"                        = 1
+    "WEBSITE_HTTPLOGGING_RETENTION_DAYS"              = 2
+    "ApplicationInsightsAgent_EXTENSION_VERSION"      = 3
+    "FUNCTIONS_EXTENSION_VERSION"                     = "~4"
+    "AzureWebJobsSecretStorageType"                   = "File"
+    "TZ"                                              = var.tz
+    "APPINSIGHTS_INSTRUMENTATIONKEY"                  = var.key
+    "FUNCTIONS_WORKER_RUNTIME"                        = "dotnet"
+    "APPINSIGHTS_PORTALINFO"                          = "ASP.NET"
+    "WEBSITE_ENABLE_SYNC_UPDATE_SITE"                 = var.active
+    "WEBSITES_ENABLE_APP_SERVICE_STORAGE"             = var.active
+    "SnapshotDebugger_EXTENSION_VERSION"              = var.feature
+    "APPINSIGHTS_PROFILERFEATURE_VERSION"             = var.feature
+    "APPINSIGHTS_SNAPSHOTFEATURE_VERSION"             = var.feature
+    "DiagnosticServices_EXTENSION_VERSION"            = var.feature
+    "XDT_MicrosoftApplicationInsights_Mode"           = var.feature
+    "InstrumentationEngine_EXTENSION_VERSION"         = var.feature
+    "XDT_MicrosoftApplicationInsights_PreemptSdk"     = var.feature
+    "XDT_MicrosoftApplicationInsights_BaseExtensions" = var.feature
+    "WEBSITE_TIME_ZONE"                               = "America/Lima"
+    "FUNCTION_ENVIRONMENT"                            = var.aspnetcore
+    "APPLICATIONINSIGHTS_CONNECTION_STRING"           = var.connection
+    "AzureWebJobsStorage"                             = var.AzureWebJobsStorage
     "API_KEY_SECRET"                                  = random_string.api_key_secret.result
+<<<<<<< HEAD
+=======
+    "AzureWebJobsStorage"                             = "DefaultEndpointsProtocol=https;AccountName=storageaccountsfundev;AccountKey=BIC2buLKlT7Evwwy/ix9jRRmVt6fsKB/Z6Mwpz4uWB2H13zaEXFI8p0KDrrnypK7P0QBeO8QKmpJ+AStnhKEag==;EndpointSuffix=core.windows.net"
+>>>>>>> 5bae8a2e89c9e698370e895c982826da48e358a4
+    "DATABASE_CONNECTION_STRING"                      = "Server=tcp:dev-nanaykuna.database.windows.net,1433;Initial Catalog=SupportDb;Persist Security Info=False;User ID=nanaykuna-db-admin;Password=6zLrZUDbbL8gLYzu0v7T3RL4;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+  }
+
+  identity {
+    type = var.identity
   }
 }
 
-#-------------------------------------
-# PE Creation - Default is "true"
-#-------------------------------------
 resource "azurerm_private_endpoint" "functions" {
-  resource_group_name = local.group
-  subnet_id           = local.private
-  location            = local.location
-  name                = local.endpoint
+  resource_group_name = var.group
+  subnet_id           = var.private
+  location            = var.location
+  name                = format ( "pe-%s-%s-tf-%s-%s", var.assetname, var.environment, var.location, var.app )
 
   private_service_connection {
-    is_manual_connection           = local.manual
-    name                           = local.pscendpoint
-    subresource_names              = [local.subresource]
+    is_manual_connection           = false
+    subresource_names              = ["sites"]
     private_connection_resource_id = azurerm_linux_function_app.functions.id
+    name                           = format ( "psce-%s-%s-tf-%s-%s", var.assetname, var.environment, var.location, var.app )
   }
 }
 
-# ASVNSC Integration - Default is "true"
 resource "azurerm_app_service_virtual_network_swift_connection" "functions" {
-  subnet_id      = local.pfunction
+  subnet_id      = var.pfunction
   app_service_id = azurerm_linux_function_app.functions.id
 }

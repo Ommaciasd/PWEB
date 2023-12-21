@@ -1,79 +1,59 @@
-#-------------------------------------
-# Random Variable - Default is "true"
-#-------------------------------------
 resource "random_string" "api_key_secret" {
-  upper            = local.always
-  special          = local.always
-  length           = local.length
-  override_special = local.override
+  upper            = var.active
+  length           = var.length
+  special          = var.active
+  override_special = var.override_special
 }
 
-# -------------------------------------
-# LWA Creation - Default is "true"
-# -------------------------------------
 resource "azurerm_linux_web_app" "react" {
   tags = {
-    created_by  = local.created
-    environment = local.environment
+    created_by  = var.created
+    environment = var.environment
   }
 
-  name                = local.node
-  service_plan_id     = local.plan
-  resource_group_name = local.group
-  location            = local.location
+  service_plan_id     = var.plan
+  resource_group_name = var.group
+  name                = format ( "lwa-%s-%s-tf-%s-%s", var.assetname, var.environment, var.location, var.app )
+  location            = var.location
 
   site_config {
-    application_stack { node_version = local.vnode }
+    application_stack { node_version = "16-lts" }
   }
 
   app_settings = {
-    "TZ"                                              = local.tz
-    "APPINSIGHTS_INSTRUMENTATIONKEY"                  = local.key
-    "APPINSIGHTS_PORTALINFO"                          = local.portal
-    "SnapshotDebugger_EXTENSION_VERSION"              = local.feature
-    "APPINSIGHTS_PROFILERFEATURE_VERSION"             = local.feature
-    "APPINSIGHTS_SNAPSHOTFEATURE_VERSION"             = local.feature
-    "DiagnosticServices_EXTENSION_VERSION"            = local.feature
-    "XDT_MicrosoftApplicationInsights_Mode"           = local.feature
-    "InstrumentationEngine_EXTENSION_VERSION"         = local.feature
-    "XDT_MicrosoftApplicationInsights_PreemptSdk"     = local.feature
-    "XDT_MicrosoftApplicationInsights_BaseExtensions" = local.feature
-    "ApplicationInsightsAgent_EXTENSION_VERSION"      = local.extension
-    "ASPNETCORE_ENVIRONMENT"                          = local.aspnetcore
-    "APPLICATIONINSIGHTS_CONNECTION_STRING"           = local.connection
+    "ApplicationInsightsAgent_EXTENSION_VERSION"      = "~3"
+    "TZ"                                              = var.tz
+    "APPINSIGHTS_INSTRUMENTATIONKEY"                  = var.key
+    "SnapshotDebugger_EXTENSION_VERSION"              = var.feature
+    "APPINSIGHTS_PROFILERFEATURE_VERSION"             = var.feature
+    "APPINSIGHTS_SNAPSHOTFEATURE_VERSION"             = var.feature
+    "DiagnosticServices_EXTENSION_VERSION"            = var.feature
+    "XDT_MicrosoftApplicationInsights_Mode"           = var.feature
+    "InstrumentationEngine_EXTENSION_VERSION"         = var.feature
+    "XDT_MicrosoftApplicationInsights_PreemptSdk"     = var.feature
+    "XDT_MicrosoftApplicationInsights_BaseExtensions" = var.feature
+    "ASPNETCORE_ENVIRONMENT"                          = var.aspnetcore
+    "APPLICATIONINSIGHTS_CONNECTION_STRING"           = var.connection
+    "APPINSIGHTS_PORTALINFO"                          = var.appinsights
     "API_KEY_SECRET"                                  = random_string.api_key_secret.result
   }
-}
 
-#-------------------------------------
-# Azure Static Web App
-#-------------------------------------
-resource "azurerm_static_site" "react" {
-  name                = "dev-nanaykuna-backoffice-ui"
-  location            = "eastus2"
-  resource_group_name = local.group
-  tags = {
-    created_by  = local.created
-    environment = local.environment
+  identity {
+    type = var.identity
   }
-
-  # app_settings = {
-  #   # Configuraciones específicas de la aplicación
-  #   WEBSITE_NODE_DEFAULT_VERSION = local.vnode
-  #   AzureStaticApps_Api_Location = "/api"
-  #   AzureStaticApps_AppArtifactLocation = "/wwwroot"
-  #   # Otras configuraciones según tus necesidades.
-  # }
-
-  # build {
-  #   publish_webapp  = true
-  #   skip_post_build = false
-  #   stack           = "node"
-  # }
 }
 
-# ASVNSC Integration - Default is "true"
+resource "azurerm_static_site" "react" {
+  name                = "swa-nanaykuna-dev-tf-eastus2-backoffice-ui"
+  location            = "eastus2"
+  resource_group_name = var.group
+  tags = {
+    created_by  = var.created
+    environment = var.environment
+  }
+}
+
 resource "azurerm_app_service_virtual_network_swift_connection" "react" {
-  subnet_id      = local.public
+  subnet_id      = var.public
   app_service_id = azurerm_linux_web_app.react.id
 }

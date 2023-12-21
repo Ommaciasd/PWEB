@@ -6,7 +6,7 @@ Initial release
 
 ### Date: 26/03/2023
 
-- Deploy: Many instances for a list with the names of all the current Azure Infrastructure ORGANIZATION for every environment.
+- Deploy: Many instances for a list with the names of all the current Azure Infrastructure Nanaykuna for every environment.
 - Integrate: Networking, Apps, Storage on Module for deploy.
 
 ### Date: 04/07/2023
@@ -19,7 +19,7 @@ Initial release
 ### Date: 07/07/2023
 
 - Integrate: Add Environment Variable "ASPNETCORE_ENVIRONMENT" for Application Settings in every Linux Web App with DotNet & Node.
-- Integrate: Random String on Module Apps in ORGANIZATION for nexts deploys.
+- Integrate: Random String on Module Apps in Nanaykuna for nexts deploys.
 ![Alt text](image-5.png)
 
 - Integrate: Add Environment Variable "API_KEY_SECRET" for Application Settings in every Linux Web App with DotNet & Node.
@@ -55,8 +55,8 @@ Initial release
 
 ![Alt text][dns]
 
-[dns]: ./src/img/png/dns_prod.png
-
 ### Date: 23/11/2023
 
 - Update   : Refactoring schema for new version in Terraform, and azure rm provider de Hashicorp.
+
+[dns]: ./src/img/png/dns_prod.png

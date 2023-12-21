@@ -1,46 +1,44 @@
-data "azurerm_client_config" "apps" {}
-
-resource "azurerm_key_vault" "keys-apps" {
+resource "azurerm_virtual_network" "apps" {
   tags = {
-    created_by  = local.created
-    environment = local.environment
+    created_by  = var.created
+    environment = var.environment
   }
 
-  access_policy {
-    secret_permissions = [
-      "Get", "Set", "Delete", "List"
-    ]
-    tenant_id = data.azurerm_client_config.apps.tenant_id
-    object_id = data.azurerm_client_config.apps.object_id
+  name                = local.apps
+  resource_group_name = var.group
+  location            = var.location
+  address_space       = [var.network]
+}
+
+resource "azurerm_subnet" "subnet" {
+  for_each              = { for idx, subnet in var.subnet : idx => subnet }
+  resource_group_name  = var.group
+  address_prefixes     = [each.value.address_prefix]
+  virtual_network_name = azurerm_virtual_network.apps.name
+  name                 = "${local.name}-${tostring(each.value.name)}"
+
+  lifecycle {
+    prevent_destroy = false
+  }
+}
+
+resource "azurerm_subnet" "gateway" {
+  delegation {
+    name  = "${local.name}-${tostring(each.value.name)}-delegation"
+
+    service_delegation {
+      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+      name    = "Microsoft.Web/serverFarms"
+    }
   }
 
-  sku_name                    = local.sku
-  name                        = local.apps
-  soft_delete_retention_days  = local.days
-  resource_group_name         = local.group
-  location                    = local.location
-  purge_protection_enabled    = local.protection
-  enabled_for_disk_encryption = local.encryption
-  tenant_id                   = data.azurerm_client_config.apps.tenant_id
-}
+  resource_group_name  = var.group
+  for_each             = { for idx, gateway in var.gateway : idx => gateway }
+  address_prefixes     = [each.value.address_prefix]
+  virtual_network_name = azurerm_virtual_network.apps.name
+  name                 = "${local.name}-${tostring(each.value.name)}"
 
-resource "azurerm_key_vault_secret" "auth0" {
-  name         = "Auth0-Api-Dev-Configuration"
-  value        = <<EOF
-{
-  "AuthorityUrl": "https://dev-10pw7xxrmoge570z.us.auth0.com/",
-  "AudienceUrl": "https://BackofficeApi.com",
-  "Domain": "dev-10pw7xxrmoge570z.us.auth0.com",
-  "ClientId": "cM6jIbBtok63Hk2dxc6CZJiTRAgP9DGa",
-  "ClientSecret": "CzcZ5_W1Z4o4_sgAroyNtq7ZxeRYnlp0SPqGeGVWw0nx8iZK77X6Ugzw1_HzJxq6"
-}
-EOF
-
-  key_vault_id = azurerm_key_vault.keys-apps.id
-}
-
-resource "azurerm_role_assignment" "example" {
-  principal_id         = data.azurerm_client_config.apps.object_id
-  role_definition_name = "Contributor"  # Puedes ajustar el rol según tus necesidades
-  scope                = azurerm_key_vault.keys-apps.id  # Aquí es donde se ajusta la referencia
+  lifecycle {
+    prevent_destroy = false
+  }
 }

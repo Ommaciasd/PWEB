@@ -20,4 +20,13 @@ Update release
 - Integrate: Random String on Module Apps in Nanaykuna for nexts deploys.
 - Integrate: Add Environment Variable "API_KEY_SECRET" for Application Settings in every Linux Web App with DotNet & Node.
 
-![Alt text](image.png)
+![Alt text][image]
+
+### Date: 06/12/2023
+
+- Update: Identity enabled for create role reader of secrets in azure key vault
+
+![Alt text][identity]
+
+[image]: ./src/img/png/image.png
+[identity]: ./src/img/png/enabled.png

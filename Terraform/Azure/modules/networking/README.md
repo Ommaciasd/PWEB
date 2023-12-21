@@ -38,7 +38,6 @@ terraform {
 ## providers.tf
 
 ~~~ go
-# Define Terraform provider
 terraform {
 
   required_providers {
@@ -59,17 +58,10 @@ provider "azurerm" {
 }
 ~~~
 
-## terraform.tfvars
-
-~~~ go
-# Nanaykuna Enviroments.
-enviroment  = "dev", "sta", and "prod"
-~~~
-
 ## variables.tf
 
 ~~~ go
-variable "enviroment" { type = string }
+environment  = "dev", "sta", and "prod"
 ~~~
 
 ### main.tf

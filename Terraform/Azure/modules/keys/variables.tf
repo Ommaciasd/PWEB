@@ -1,16 +1,22 @@
-locals {
-  days        = "7"
-  permissions = "Get"
-  encryption  = "true"
-  protection  = "false"
-  apps        = var.apps
-  location    = "eastus"
-  group       = var.group
-  sku         = "standard"
-  created     = "terraform"
-  environment = var.environment
+variable "created"     { type = string }
+variable "location"    { type = string }
+variable "assetname"   { type = string }
+variable "environment" { type = string }
+
+variable "access_policies" {
+  description = "List of access policies for the Key Vault."
+  type        = list(object({
+    tenant_id = string
+    object_id = string
+  }))
 }
 
-variable "apps"        { type = string }
-variable "group"       { type = string }
-variable "environment" { type = string }
+variable "group" {
+  description = "Resource group name."
+  type        = string
+}
+
+variable "active" {
+  description = "Flag to enable/disable certain features."
+  type        = bool
+}
