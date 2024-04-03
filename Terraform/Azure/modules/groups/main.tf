@@ -2,10 +2,10 @@
 resource "azurerm_resource_group" "apps" {
   count               = length(var.app)
   name                = "${local.name}-${var.app[count.index]}"
-  location = local.location
+  location = var.location
 
   tags = {
-    created_by  = local.created
-    environment = local.environment
+    created_by  = var.created
+    environment = var.environment
   }
 }

@@ -1,44 +1,37 @@
-resource "azurerm_virtual_network" "apps" {
+data "azurerm_client_config" "apps" {}
+
+#---------------------------------------
+# KVaults Creation - Default is "true"
+#---------------------------------------
+resource "azurerm_key_vault" "keys-apps" {
   tags = {
     created_by  = var.created
     environment = var.environment
   }
 
-  name                = local.apps
-  resource_group_name = var.group
-  location            = var.location
-  address_space       = [var.network]
-}
+  access_policy {
+    key_permissions = [
+      "${var.permissions}",
+    ]
 
-resource "azurerm_subnet" "subnet" {
-  for_each              = { for idx, subnet in var.subnet : idx => subnet }
-  resource_group_name  = var.group
-  address_prefixes     = [each.value.address_prefix]
-  virtual_network_name = azurerm_virtual_network.apps.name
-  name                 = "${local.name}-${tostring(each.value.name)}"
+    secret_permissions = [
+      "${var.permissions}",
+    ]
 
-  lifecycle {
-    prevent_destroy = false
-  }
-}
+    storage_permissions = [
+      "${var.permissions}",
+    ]
 
-resource "azurerm_subnet" "gateway" {
-  delegation {
-    name  = "${local.name}-${tostring(each.value.name)}-delegation"
-
-    service_delegation {
-      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
-      name    = "Microsoft.Web/serverFarms"
-    }
+    tenant_id = data.azurerm_client_config.apps.tenant_id
+    object_id = data.azurerm_client_config.apps.object_id
   }
 
-  resource_group_name  = var.group
-  for_each             = { for idx, gateway in var.gateway : idx => gateway }
-  address_prefixes     = [each.value.address_prefix]
-  virtual_network_name = azurerm_virtual_network.apps.name
-  name                 = "${local.name}-${tostring(each.value.name)}"
-
-  lifecycle {
-    prevent_destroy = false
-  }
+  sku_name                    = var.sku
+  name                        = var.apps
+  soft_delete_retention_days  = var.days
+  resource_group_name         = var.group
+  location                    = var.location
+  purge_protection_enabled    = var.protection
+  enabled_for_disk_encryption = var.encryption
+  tenant_id                   = data.azurerm_client_config.apps.tenant_id
 }

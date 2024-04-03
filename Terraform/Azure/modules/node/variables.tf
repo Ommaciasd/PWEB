@@ -16,3 +16,5 @@ variable "environment"       { type = string }
 variable "aspnetcore"        { type = string }
 variable "appinsights"       { type = string }
 variable "override_special"  { type = string }
+variable "extension_version"  { type = string }
+variable "node_version"  { type = string }

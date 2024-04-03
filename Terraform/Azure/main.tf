@@ -10,6 +10,9 @@ module "groups" {
   app         = var.group
   environment = local.environment
   source      = ".//modules//groups"
+  location    = local.location
+  created     = local.created
+  assetname   = local.assetname
 }
 
 module "sql" {
@@ -27,9 +30,15 @@ module "keys" {
   location                        = local.location
   assetname                       = local.assetname
   environment                     = local.environment
+  encryption                      = local.encryption
+  protection                      = local.protection
+  days                            = local.days
+  apps                            = local.apps
+  sku                             = local.sku
+  permissions                     = local.permissions
   group                           = module.groups.apps
   source                          = ".//modules//keys"
-  key_vault_reference_identity_id = "39cee712-1020-496b-a490-57ab8f928149"
+  key_vault_reference_identity_id = local.key_vault_reference_identity_id
   access_policies = [
     {
       tenant_id = "..."
@@ -43,13 +52,17 @@ module "networking" {
   apps        = local.apps
   subnet      = var.subnet
   gateway     = var.gateway
-  network     = local.network
+  network     = var.network
   created     = local.created
   location    = local.location
   assetname   = local.assetname
   environment = local.environment
   group       = module.groups.networking
   source      = ".//modules//networking"
+  delegation  = local.delegation
+  actions     = local.actions
+  microsoft   = local.microsoft
+  depends_on  = [module.groups]
 }
 
 module "monitoring" {
@@ -81,26 +94,28 @@ module "dotnet" {
 }
 
 module "node" {
-  connection       = module.monitoring.connection
-  override_special = local.override_special
-  key              = local.key
-  public           = module.networking.gateway[0].id
-  group            = module.groups.apps
-  tz               = local.tz
-  app              = each.value
-  active           = local.active
-  length           = local.length
-  created          = local.created
-  feature          = local.feature
-  location         = local.location
-  identity         = local.identity
-  assetname        = local.assetname
-  for_each         = toset(var.node)
-  plan             = module.plan.web
-  aspnetcore       = local.aspnetcore
-  appinsights      = local.appinsights
-  environment      = local.environment
-  source           = ".//modules//node"
+  connection        = module.monitoring.connection
+  override_special  = local.override_special
+  key               = local.key
+  public            = module.networking.gateway[0].id
+  group             = module.groups.apps
+  tz                = local.tz
+  app               = each.value
+  active            = local.active
+  length            = local.length
+  created           = local.created
+  feature           = local.feature
+  location          = local.location
+  identity          = local.identity
+  assetname         = local.assetname
+  for_each          = toset(var.node)
+  plan              = module.plan.web
+  aspnetcore        = local.aspnetcore
+  appinsights       = local.appinsights
+  environment       = local.environment
+  node_version      = local.node_version
+  extension_version = local.extension_version
+  source            = ".//modules//node"
 }
 
 module "functions" {
@@ -138,6 +153,23 @@ module "dns" {
   environment         = local.environment
   group               = module.groups.networking
   create_dns_resource = local.environment == "prod" ? true : false
+}
+
+module "user_assigned_identity" {
+  source        = "./modules/user_assigned_identity"
+  identity_name = local.identity_name
+  group         = module.groups.apps
+  location      = local.location
+  depends_on    = [module.groups]
+}
+
+module "postgresql_server" {
+  source      = "./modules/postgresql_flexible_server"
+  server_name = local.server_name
+  group       = module.groups.apps
+  location    = local.actions
+  id          = module.user_assigned_identity.id
+  depends_on  = [module.user_assigned_identity]
 }
 
 # Second deploy for compute.

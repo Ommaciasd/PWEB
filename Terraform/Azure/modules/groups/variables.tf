@@ -1,10 +1,9 @@
 variable "environment" { type = string }
 variable "app"         { type = list(string) }
+variable "location"    { type = string }
+variable "assetname"   { type = string }
+variable "created"     { type = string }
 
 locals {
-  location    = "eastus"
-  assetname   = "nanaykuna"
-  created     = "terraform"
-  environment = var.environment
-  name        = format("rg-%s-%s-tf-%s", local.assetname, var.environment, local.location)
+  name        = format("rg-%s-%s-tf-%s", var.assetname, var.environment, var.location)
 }

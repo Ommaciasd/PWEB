@@ -1,15 +1,19 @@
 variable "apps"        { type = string }
 variable "group"       { type = string }
-variable "network"     { type = string }
+variable "network"     { type = list(string) }
 variable "created"     { type = string }
 variable "location"    { type = string }
 variable "assetname"   { type = string }
 variable "environment" { type = string }
+variable "delegation"   { type = string }
+variable "actions" { type = string }
+variable "microsoft" { type = string }
 
 variable "subnet" {
   type = list(object({
     name           = string
     address_prefix = string
+    delegation     = string
   }))
 }
 
