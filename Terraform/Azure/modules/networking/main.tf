@@ -3,22 +3,22 @@
 #-------------------------------------
 resource "azurerm_virtual_network" "apps" {
   tags = {
-    created_by  = local.created
-    environment = local.environment
+    created_by  = var.created
+    environment = var.environment
   }
 
   name                = local.apps
-  resource_group_name = local.group
-  location            = local.location
-  address_space       = [local.network]
+  resource_group_name = var.group
+  location            = var.location
+  address_space       = var.network
 }
 
 #-------------------------------------
 # SNETs Creation - Default is "true"
 #-------------------------------------
-resource "azurerm_subnet" "subnet" {
+resource "azurerm_subnet" "privates" {
   for_each              = { for idx, subnet in var.subnet : idx => subnet }
-  resource_group_name  = local.group
+  resource_group_name  = var.group
   address_prefixes     = [each.value.address_prefix]
   virtual_network_name = azurerm_virtual_network.apps.name
   name                 = "${local.name}-${tostring(each.value.name)}"
@@ -26,19 +26,30 @@ resource "azurerm_subnet" "subnet" {
   lifecycle {
     prevent_destroy = false
   }
+
+  dynamic "delegation" {
+    for_each = each.value.delegation != null ? [each.value.delegation] : []
+    content {
+      name = delegation.value.name
+      service_delegation {
+        name    = var.delegation
+        actions = [var.actions]
+      }
+    }
+  }
 }
 
-resource "azurerm_subnet" "gateway" {
+resource "azurerm_subnet" "public" {
   delegation {
-    name  = "${local.name}-${tostring(each.value.name)}-${local.delegation}"
+    name  = "${local.name}-${tostring(each.value.name)}-${var.delegation}"
 
     service_delegation {
-      actions = [local.actions]
-      name    = local.microsoft
+      actions = [var.actions]
+      name    = var.microsoft
     }
   }
 
-  resource_group_name  = local.group
+  resource_group_name  = var.group
   for_each             = { for idx, gateway in var.gateway : idx => gateway }
   address_prefixes     = [each.value.address_prefix]
   virtual_network_name = azurerm_virtual_network.apps.name

@@ -52,10 +52,6 @@ resource "azurerm_linux_function_app" "functions" {
     "APPLICATIONINSIGHTS_CONNECTION_STRING"           = var.connection
     "AzureWebJobsStorage"                             = var.AzureWebJobsStorage
     "API_KEY_SECRET"                                  = random_string.api_key_secret.result
-<<<<<<< HEAD
-=======
-    "AzureWebJobsStorage"                             = "DefaultEndpointsProtocol=https;AccountName=storageaccountsfundev;AccountKey=BIC2buLKlT7Evwwy/ix9jRRmVt6fsKB/Z6Mwpz4uWB2H13zaEXFI8p0KDrrnypK7P0QBeO8QKmpJ+AStnhKEag==;EndpointSuffix=core.windows.net"
->>>>>>> 5bae8a2e89c9e698370e895c982826da48e358a4
     "DATABASE_CONNECTION_STRING"                      = "Server=tcp:dev-nanaykuna.database.windows.net,1433;Initial Catalog=SupportDb;Persist Security Info=False;User ID=nanaykuna-db-admin;Password=6zLrZUDbbL8gLYzu0v7T3RL4;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
   }
 

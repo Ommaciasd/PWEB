@@ -17,11 +17,11 @@ resource "azurerm_linux_web_app" "react" {
   location            = var.location
 
   site_config {
-    application_stack { node_version = "16-lts" }
+    application_stack { node_version = var.node_version }
   }
 
   app_settings = {
-    "ApplicationInsightsAgent_EXTENSION_VERSION"      = "~3"
+    "ApplicationInsightsAgent_EXTENSION_VERSION"      = var.extension_version
     "TZ"                                              = var.tz
     "APPINSIGHTS_INSTRUMENTATIONKEY"                  = var.key
     "SnapshotDebugger_EXTENSION_VERSION"              = var.feature
@@ -43,9 +43,9 @@ resource "azurerm_linux_web_app" "react" {
   }
 }
 
-resource "azurerm_static_site" "react" {
-  name                = "swa-nanaykuna-dev-tf-eastus2-backoffice-ui"
-  location            = "eastus2"
+resource "azurerm_static_web_app" "react" {
+  name                = var.app
+  location            = var.location
   resource_group_name = var.group
   tags = {
     created_by  = var.created
