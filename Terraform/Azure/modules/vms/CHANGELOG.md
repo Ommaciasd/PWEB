@@ -2,7 +2,8 @@
 
 ## Version [1.0.0]
 
-Initial release
+> .[!NOTE].
+> Initial release
 
 ### Date: 11/07/2023
 
